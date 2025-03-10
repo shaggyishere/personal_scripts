@@ -5,7 +5,6 @@ release_option=false
 help_option=false
 branch="env/svil"
 
-# -r argument is used to RELEASE
 while getopts "b:rh" flags; do
     case "$flags" in
         r)
@@ -21,7 +20,7 @@ while getopts "b:rh" flags; do
 done
 
 if [ "$help_option" = true ]; then
-    echo "Usage: $0 [-r] [-h]"
+    echo "Usage: $0 [-r] [-h] [-b branch_name]"
     echo "This script is intended to be used when a CR lifecycle is being closed (merged from PR) and the env/svil branch is to be updated to the origin" 
     echo "This script will perform the same operations for all three be4fe!"
     echo "Options:"
