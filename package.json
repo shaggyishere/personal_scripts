@@ -1,7 +1,0 @@
-{
-  "name": "personal_scripts",
-  "type": "module",
-  "dependencies": {
-    "dotenv": "^16.4.7"
-  }
-}
