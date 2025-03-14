@@ -11,14 +11,30 @@ const REQUIRED_ENV_VARS = [
     "BITBUCKET_USERNAME",
     "BITBUCKET_PASSWORD",
     "PROJECT_KEY",
-    "DEFAULT_REPO_SLUGS"
+    "DEFAULT_REPO_SLUGS",
+    "POSSIBLE_REVIEWERS",
 ];
+
+const missingVars = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
+
+if (missingVars.length > 0) {
+    console.error("Missing required environment variables:");
+    missingVars.forEach((key) => console.error(`   - ${key}`));
+    console.error("Please set these variables in your environment before running the script.");
+    process.exit(1);
+}
+
+if (POSSIBLE_REVIEWERS.length < 2) {
+    console.error("Please set at least two possible reviewers using POSSIBLE_REVIEWERS env variable.");
+    process.exit(1);
+}
 
 const BITBUCKET_BASE_URL = process.env.BITBUCKET_BASE_URL;
 const USERNAME = process.env.BITBUCKET_USERNAME;
 const PASSWORD = process.env.BITBUCKET_PASSWORD;
 const PROJECT_KEY = process.env.PROJECT_KEY;
 const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
+const POSSIBLE_REVIEWERS = process.env.POSSIBLE_REVIEWERS.split(",");
 
 const argv = yargs(hideBin(process.argv))
     .option("b", {
@@ -31,7 +47,7 @@ const argv = yargs(hideBin(process.argv))
         alias: "reviewers",
         type: "string",
         describe: "Comma-separated list of reviewers",
-        demandOption: true,
+        demandOption: false,
     })
     .option("rs", {
         alias: "repos",
@@ -43,20 +59,10 @@ const argv = yargs(hideBin(process.argv))
     .argv;
 
 const sourceBranch = argv.b;
-const reviewers = argv.rvw.split(",").map((user) => ({ user: { name: user } }));
+const reviewers = argv.rvw ? argv.rvw.split(",").map((user) => ({ user: { name: user } })) : extractTwoRandomElementsFromList(POSSIBLE_REVIEWERS);
 const repos = argv.rs ? argv.rs.split(",") : DEFAULT_REPO_SLUGS;
 
 async function main() {
-
-    const missingVars = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
-
-    if (missingVars.length > 0) {
-      console.error("Missing required environment variables:");
-      missingVars.forEach((key) => console.error(`   - ${key}`));
-      console.error("Please set these variables in your environment before running the script.");
-      process.exit(1);
-    }
-
     for (const repo of repos) {
         createPullRequest(repo, sourceBranch, reviewers);
     }
@@ -127,6 +133,21 @@ function removePrefixes(word, prefixes) {
         }
     }
     return word;
+}
+
+function extractTwoRandomElementsFromList(arr, count = 2) {
+    if (arr.length < count) {
+        console.error("The following array should contain at least two element: ", arr);
+        process.exit(1);
+    }
+
+    const result = new Set();
+    while (result.size < count) {
+        const randomIndex = Math.floor(Math.random() * arr.length);
+        result.add(arr[randomIndex]);
+    }
+
+    return [...result];
 }
 
 main();

@@ -18,13 +18,14 @@ Before running this script, ensure you have the following:
 
 This script requires the following environment variables:
 
-| Variable               | Description                                      |
-|------------------------|--------------------------------------------------|
-| `BITBUCKET_BASE_URL`   | Your Bitbucket instance URL                     |
-| `BITBUCKET_USERNAME`   | Your Bitbucket username                         |
-| `BITBUCKET_PASSWORD`   | Your Bitbucket HTTP token (see below)           |
-| `PROJECT_KEY`          | The Bitbucket project key                       |
-| `DEFAULT_REPO_SLUGS`   | Comma-separated list of default repositories    |
+| Variable               | Description                                                      |
+|------------------------|------------------------------------------------------------------|                
+| `BITBUCKET_BASE_URL`   | Your Bitbucket instance URL                                      |
+| `BITBUCKET_USERNAME`   | Your Bitbucket username (UXXXXX)                                 |
+| `BITBUCKET_PASSWORD`   | Your Bitbucket HTTP token (see below)                            |
+| `PROJECT_KEY`          | The Bitbucket project key                                        |
+| `DEFAULT_REPO_SLUGS`   | Comma-separated list of default repositories                     |
+| `POSSIBLE_REVIEWERS`   | Comma-separated list of possible reviewers (UXXXXX values)       |
 
 ### 🔑 How to Create a Bitbucket HTTP Token
 
@@ -40,8 +41,8 @@ After creating a token, set the `BITBUCKET_PASSWORD` environment variable to the
 Clone this repository and install the required dependencies:
 
 ```sh
-git clone https://your-repo-url.git
-cd your-repo-folder
+git clone https://this-repo-url.git
+cd personal-scripts/create_PR/
 npm install
 ```
 
@@ -53,6 +54,7 @@ BITBUCKET_USERNAME=your-username
 BITBUCKET_PASSWORD=your-http-token
 PROJECT_KEY=your-project-key
 DEFAULT_REPO_SLUGS=repo1,repo2,repo3
+POSSIBLE_REVIEWERS=reviewer1,reviewer2,reviewer3
 ```
 
 ---
@@ -70,7 +72,7 @@ node create_PR.js -b <branch_name> -rvw <user1,user2> -rs <repo1,repo2>
 | Argument    | Description                                              |
 |-------------|----------------------------------------------------------|
 | `-b` / `--branch` | The **source branch** name for the PR                   |
-| `-rvw` / `--reviewers` | **Comma-separated list** of reviewers (e.g., `user1,user2`) |
+| `-rvw` / `--reviewers` | **Comma-separated list** of reviewers (e.g., `UXXXX,UXXXX`) |
 | `-rs` / `--repos` | **Comma-separated list** of repositories (e.g., `repo1,repo2`) |
 
 ### ✅ Example Usage
