@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 
@@ -8,31 +9,30 @@ const PASSWORD = process.env.BITBUCKET_PASSWORD;
 const PROJECT_KEY = process.env.PROJECT_KEY;
 
 async function createPullRequest(repoSlug, sourceBranch, reviewers) {
-  const url = `${BITBUCKET_BASE_URL}/rest/api/1.0/projects/${PROJECT_KEY}/repos/${repoSlug}/pull-requests`;
+    const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${PROJECT_KEY}/repos/${repoSlug}/pull-requests`;
 
-  const prData = generatePRInfo(repoSlug, sourceBranch, reviewers);
+    const prData = generatePRInfo(repoSlug, sourceBranch, reviewers);
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${Buffer.from(`${USERNAME}:${PASSWORD}`).toString("base64")}`
-      },
-      body: JSON.stringify(prData),
-    });
+    try {
+        const response = await axios.post(url, prData, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Basic ${Buffer.from(`${USERNAME}:${PASSWORD}`).toString("base64")}`
+            }
+        });
 
-    if (!response.ok) {
-        const errorData = await response.json(); // Get full error details
-        console.error(`HTTP Error! Status:`, response.status);
-        console.error(`Response:`, JSON.stringify(errorData, null, 2));
+        console.log("✅ PR Created Successfully:", response.data);
+    } catch (error) {
+        if (error.response) {
+            console.error("❌ Error creating PR:");
+            console.error("Status:", error.response.status, error.response.statusText);
+            console.error("Response Data:", JSON.stringify(error.response.data, null, 2));
+        } else if (error.request) {
+            console.error("❌ No response from server. Check API URL or network connection.");
+        } else {
+            console.error("❌ Unexpected error:", error.message);
+        }
     }
-
-    const data = await response.json();
-    console.log("✅ PR Created Successfully: ", data);
-  } catch (error) {
-    console.error("❌ Error creating PR:", error.message);
-  }
 }
 
 function generatePRInfo(repoSlug, sourceBranch, reviewers) {
@@ -83,9 +83,9 @@ function generatePRInfo(repoSlug, sourceBranch, reviewers) {
 
 function removePrefixes(word, prefixes) {
     for (let prefix of prefixes) {
-      if (word.startsWith(prefix)) {
-        return word.replace(prefix, "");
-      }
+        if (word.startsWith(prefix)) {
+            return word.replace(prefix, "");
+        }
     }
     return word;
 }
