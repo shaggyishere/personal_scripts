@@ -23,11 +23,13 @@ async function createPullRequest(repoSlug, sourceBranch, reviewers) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP Error! Status: ${response.status}`);
+        const errorData = await response.json(); // Get full error details
+        console.error(`HTTP Error! Status:`, response.status);
+        console.error(`Response:`, JSON.stringify(errorData, null, 2));
     }
 
     const data = await response.json();
-    console.log("✅ PR Created Successfully:", data);
+    console.log("✅ PR Created Successfully: ", data);
   } catch (error) {
     console.error("❌ Error creating PR:", error.message);
   }
@@ -55,16 +57,16 @@ function generatePRInfo(repoSlug, sourceBranch, reviewers) {
                     name: reviewers[0]
                 }
             },
-            {
-                user: {
-                    name: reviewers[1]
-                }
-            },
-            {
-                user: {
-                    name: reviewers[2]
-                }
-            }
+            // {
+            //     user: {
+            //         name: reviewers[1]
+            //     }
+            // },
+            // {
+            //     user: {
+            //         name: reviewers[2]
+            //     }
+            // }
         ],
         toRef: {
             id: `refs/heads/env/svil`,
