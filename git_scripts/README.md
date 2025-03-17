@@ -11,7 +11,7 @@ This script creates a new branch across multiple repositories and pushes it to t
 
 #### Usage:
 ```bash
-./create_branches.sh -b <branch_name>
+sh create_branches.sh -b <branch_name>
 ```
 
 #### Options:
