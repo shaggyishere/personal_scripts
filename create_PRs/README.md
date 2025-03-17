@@ -46,11 +46,11 @@ Clone this repository and install the required dependencies:
 
 ```sh
 git clone https://this-repo-url.git
-cd personal-scripts/create_PR/
+cd personal-scripts/create_PRs/
 npm install
 ```
 
-If using a `.env` file, create one in _create_PR/_ and add:
+If using a `.env` file, create one in _create_PRs/_ and add:
 
 ```ini
 BITBUCKET_BASE_URL=https://your-bitbucket-instance.com
@@ -68,7 +68,7 @@ POSSIBLE_REVIEWERS=reviewer1,reviewer2,reviewer3
 Run the script using:
 
 ```sh
-node create_PR.js -b <branch_name> -rvw <user1,user2> -rs <repo1,repo2>
+node create_PRs.js -b <branch_name> -rvw <user1,user2> -rs <repo1,repo2>
 ```
 
 ### 🔹 Command-Line Arguments
@@ -79,10 +79,14 @@ node create_PR.js -b <branch_name> -rvw <user1,user2> -rs <repo1,repo2>
 | `-rvw` / `--reviewers` | **Comma-separated list** of reviewers (e.g., `UXXXX,UXXXX`) |
 | `-rs` / `--repos` | **Comma-separated list** of repositories (e.g., `repo1,repo2`) |
 
+Note: 
+* if -rvw flag is not specified, two random reviewers will be chosen from the POSSIBLE_REVIEWERS list.
+* If -rs is not specified, the script will be run on DEFAULT_REPO_SLUGS repositories.
+
 ### ✅ Example Usage
 
 ```sh
-node create_PR.js -b feature-xyz -rvw reviewer1,reviewer2 -rs repo1,repo2
+node create_PRs.js -b feature-xyz -rvw reviewer1,reviewer2 -rs repo1,repo2
 ```
 
 ---
