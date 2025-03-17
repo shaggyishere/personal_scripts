@@ -58,7 +58,7 @@ const branchToMerge = argv.b;
 async function main() {
     for (const repo of repos) {
         const prInfos = await getPRInfos(repo, branchToMerge, DESTINATION_BRANCH);
-        await mergePR(repo, prInfos.id, prInfos.version);
+        await mergePR(repo, branchToMerge, prInfos.id, prInfos.version);
         console.log();
     }
 }
@@ -71,23 +71,42 @@ async function getPRInfos(repoSlug, sourceBranch, destinationBranch) {
     try {
         const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${BITBUCKET_PROJECT_KEY}/repos/${repoSlug}/pull-requests?state=OPEN`;
         const response = await axios.get(url, { headers: authHeader });
-        return response.data.
-            values
+        return response.data
+            .values
             .filter((pr) => pr.fromRef.displayId === sourceBranch && pr.toRef.displayId === destinationBranch)
-            [0]; // there should be always one PR that satisay this condition
+            [0]; // there should be always just one PR that satisay this condition
     } catch (error) {
         console.error(`❌ Error fetching PRs for repo ${repoSlug}:`, error.response?.data || error.message);
         return [];
     }
 }
 
-async function mergePR(repoSlug, prId, prVersion) {
+async function mergePR(repoSlug, branchToMerge, prId, prVersion) {
     try {
         const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${BITBUCKET_PROJECT_KEY}/repos/${repoSlug}/pull-requests/${prId}/merge`;
         const response = await axios.post(url, { version: prVersion }, { headers: authHeader });
-        console.log(`✅ PR ${prId} merged successfully in ${repoSlug}.`);
+
+        if (response.status === 200) {
+            console.log(`✅ PR ${prId} merged successfully in ${repoSlug}.`);
+            await deleteBranch(repoSlug, branchToMerge);
+        }
     } catch (error) {
         console.error(`❌ Failed to merge PR ${prId} in ${repoSlug}:`, error.response?.data || error.message);
+    }
+}
+
+async function deleteBranch(repoSlug, branch) {
+    const deleteBranchUrl = `${BITBUCKET_BASE_URL}/rest/branch-utils/latest/projects/${BITBUCKET_PROJECT_KEY}/repos/${repoSlug}/branches`;
+
+    try {
+        await axios.delete(deleteBranchUrl, {
+            headers: authHeader,
+            data: { name: `refs/heads/${branch}` },
+        });
+
+        console.log(`✅ Source branch '${branch}' deleted successfully.`);
+    } catch (error) {
+        console.error("❌ Error deleting source branch:", error.response?.data || error.message);
     }
 }
 
