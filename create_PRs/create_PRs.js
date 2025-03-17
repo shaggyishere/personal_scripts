@@ -10,7 +10,7 @@ const REQUIRED_ENV_VARS = [
     "BITBUCKET_BASE_URL",
     "BITBUCKET_USERNAME",
     "BITBUCKET_PASSWORD",
-    "PROJECT_KEY",
+    "BITBUCKET_PROJECT_KEY",
     "DESTINATION_BRANCH",
     "DEFAULT_REPO_SLUGS",
     "POSSIBLE_REVIEWERS",
@@ -25,11 +25,6 @@ if (missingVars.length > 0) {
     process.exit(1);
 }
 
-if (POSSIBLE_REVIEWERS.length < 2) {
-    console.error("Please set at least two possible reviewers using POSSIBLE_REVIEWERS env variable.");
-    process.exit(1);
-}
-
 const BITBUCKET_BASE_URL = process.env.BITBUCKET_BASE_URL;
 const BITBUCKET_USERNAME = process.env.BITBUCKET_USERNAME;
 const BITBUCKET_PASSWORD = process.env.BITBUCKET_PASSWORD;
@@ -37,6 +32,11 @@ const BITBUCKET_PROJECT_KEY = process.env.BITBUCKET_PROJECT_KEY;
 const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
 const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
 const POSSIBLE_REVIEWERS = process.env.POSSIBLE_REVIEWERS.split(",");
+
+if (POSSIBLE_REVIEWERS.length < 2) {
+    console.error("Please set at least two possible reviewers using POSSIBLE_REVIEWERS env variable.");
+    process.exit(1);
+}
 
 const argv = yargs(hideBin(process.argv))
     .option("b", {
