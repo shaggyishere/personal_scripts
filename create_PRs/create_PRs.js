@@ -31,9 +31,9 @@ if (POSSIBLE_REVIEWERS.length < 2) {
 }
 
 const BITBUCKET_BASE_URL = process.env.BITBUCKET_BASE_URL;
-const USERNAME = process.env.BITBUCKET_USERNAME;
-const PASSWORD = process.env.BITBUCKET_PASSWORD;
-const PROJECT_KEY = process.env.PROJECT_KEY;
+const BITBUCKET_USERNAME = process.env.BITBUCKET_USERNAME;
+const BITBUCKET_PASSWORD = process.env.BITBUCKET_PASSWORD;
+const BITBUCKET_PROJECT_KEY = process.env.BITBUCKET_PROJECT_KEY;
 const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
 const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
 const POSSIBLE_REVIEWERS = process.env.POSSIBLE_REVIEWERS.split(",");
@@ -71,7 +71,7 @@ async function main() {
 }
 
 async function createPullRequest(repoSlug, sourceBranch, reviewers) {
-    const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${PROJECT_KEY}/repos/${repoSlug}/pull-requests`;
+    const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${BITBUCKET_PROJECT_KEY}/repos/${repoSlug}/pull-requests`;
 
     const prData = generatePullRequestInfo(repoSlug, sourceBranch, reviewers);
 
@@ -79,7 +79,7 @@ async function createPullRequest(repoSlug, sourceBranch, reviewers) {
         const response = await axios.post(url, prData, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Basic ${Buffer.from(`${USERNAME}:${PASSWORD}`).toString("base64")}`
+                Authorization: `Basic ${Buffer.from(`${BITBUCKET_USERNAME}:${BITBUCKET_PASSWORD}`).toString("base64")}`
             }
         });
 
@@ -108,7 +108,7 @@ function generatePullRequestInfo(repoSlug, sourceBranch, reviewers) {
             id: `refs/heads/${sourceBranch}`,
             repository: {
                 project: {
-                    key: PROJECT_KEY
+                    key: BITBUCKET_PROJECT_KEY
                 },
                 slug: repoSlug
             },
@@ -119,7 +119,7 @@ function generatePullRequestInfo(repoSlug, sourceBranch, reviewers) {
             id: `refs/heads/${DESTINATION_BRANCH}`,
             repository: {
                 project: {
-                    key: PROJECT_KEY
+                    key: BITBUCKET_PROJECT_KEY
                 },
                 slug: repoSlug
             },

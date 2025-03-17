@@ -1,5 +1,5 @@
 {
-  "name": "personal_scripts",
+  "name": "create_PRs",
   "type": "module",
   "dependencies": {
     "axios": "^1.8.3",
