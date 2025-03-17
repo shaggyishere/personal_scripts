@@ -72,6 +72,7 @@ const reviewers = argv.rvw ? argv.rvw.split(",").map((user) => ({ user: { name: 
 async function main() {
     for (const repo of repos) {
         createPullRequest(repo, sourceBranch, reviewers);
+        console.log();
     }
 }
 
