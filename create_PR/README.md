@@ -1,10 +1,10 @@
-# 🚀 Bitbucket PR Automation Script
+# 🚀 Bitbucket Create PR Automation Script
 
 This script automates the process of creating pull requests in Bitbucket using the Bitbucket REST API. It allows users to specify the source branch, reviewers, and target repositories via command-line arguments.
 
 🎯 Aim of This Script
 
-The goal of this script is to automate the creation of pull requests for multiple backend-for-frontend (BE4FE) repositories, avoiding the need to manually interact with the Bitbucket GUI.
+The goal of this script is to automate the creation of pull requests for multiple backend-for-frontend (BE4FE) repositories, that shares a common development branch, avoiding the need to manually interact with the Bitbucket GUI.
 
 ---
 
