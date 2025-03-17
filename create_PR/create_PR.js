@@ -11,6 +11,7 @@ const REQUIRED_ENV_VARS = [
     "BITBUCKET_USERNAME",
     "BITBUCKET_PASSWORD",
     "PROJECT_KEY",
+    "DESTINATION_BRANCH",
     "DEFAULT_REPO_SLUGS",
     "POSSIBLE_REVIEWERS",
 ];
@@ -33,6 +34,7 @@ const BITBUCKET_BASE_URL = process.env.BITBUCKET_BASE_URL;
 const USERNAME = process.env.BITBUCKET_USERNAME;
 const PASSWORD = process.env.BITBUCKET_PASSWORD;
 const PROJECT_KEY = process.env.PROJECT_KEY;
+const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
 const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
 const POSSIBLE_REVIEWERS = process.env.POSSIBLE_REVIEWERS.split(",");
 
@@ -58,9 +60,9 @@ const argv = yargs(hideBin(process.argv))
     .help()
     .argv;
 
+const repos = argv.rs ? argv.rs.split(",") : DEFAULT_REPO_SLUGS;
 const sourceBranch = argv.b;
 const reviewers = argv.rvw ? argv.rvw.split(",").map((user) => ({ user: { name: user } })) : extractTwoRandomElementsFromList(POSSIBLE_REVIEWERS);
-const repos = argv.rs ? argv.rs.split(",") : DEFAULT_REPO_SLUGS;
 
 async function main() {
     for (const repo of repos) {
@@ -114,7 +116,7 @@ function generatePullRequestInfo(repoSlug, sourceBranch, reviewers) {
         },
         reviewers: reviewers,
         toRef: {
-            id: `refs/heads/env/svil`,
+            id: `refs/heads/${DESTINATION_BRANCH}`,
             repository: {
                 project: {
                     key: PROJECT_KEY
