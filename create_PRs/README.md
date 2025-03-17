@@ -27,7 +27,7 @@ This script requires the following environment variables:
 | `BITBUCKET_BASE_URL`   | Your Bitbucket instance URL                                      |
 | `BITBUCKET_USERNAME`   | Your Bitbucket username (UXXXXX)                                 |
 | `BITBUCKET_PASSWORD`   | Your Bitbucket HTTP token (see below)                            |
-| `PROJECT_KEY`          | The Bitbucket project key                                        |
+| `BITBUCKET_PROJECT_KEY`          | The Bitbucket project key                                        |
 | `DEFAULT_REPO_SLUGS`   | Comma-separated list of default repositories                     |
 | `POSSIBLE_REVIEWERS`   | Comma-separated list of possible reviewers (UXXXXX values)       |
 
@@ -56,7 +56,7 @@ If using a `.env` file, create one in _create_PRs/_ and add:
 BITBUCKET_BASE_URL=https://your-bitbucket-instance.com
 BITBUCKET_USERNAME=your-username
 BITBUCKET_PASSWORD=your-http-token
-PROJECT_KEY=your-project-key
+BITBUCKET_PROJECT_KEY=your-project-key
 DEFAULT_REPO_SLUGS=repo1,repo2,repo3
 POSSIBLE_REVIEWERS=reviewer1,reviewer2,reviewer3
 ```
