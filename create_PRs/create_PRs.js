@@ -1,10 +1,15 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import axios from "axios";
 import { Buffer } from "buffer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 const REQUIRED_ENV_VARS = [
     "BITBUCKET_BASE_URL",
