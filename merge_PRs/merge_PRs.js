@@ -1,0 +1,93 @@
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import axios from "axios";
+import { Buffer } from "buffer";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, ".env") });
+
+const REQUIRED_ENV_VARS = [
+    "BITBUCKET_BASE_URL",
+    "BITBUCKET_USERNAME",
+    "BITBUCKET_PASSWORD",
+    "BITBUCKET_PROJECT_KEY",
+    "DESTINATION_BRANCH",
+    "DEFAULT_REPO_SLUGS"
+];
+
+const missingVars = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
+
+if (missingVars.length > 0) {
+    console.error("Missing required environment variables:");
+    missingVars.forEach((key) => console.error(`   - ${key}`));
+    console.error("Please set these variables in your environment before running the script.");
+    process.exit(1);
+}
+
+const BITBUCKET_BASE_URL = process.env.BITBUCKET_BASE_URL;
+const BITBUCKET_USERNAME = process.env.BITBUCKET_USERNAME;
+const BITBUCKET_PASSWORD = process.env.BITBUCKET_PASSWORD;
+const BITBUCKET_PROJECT_KEY = process.env.BITBUCKET_PROJECT_KEY;
+const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
+const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
+
+const argv = yargs(hideBin(process.argv))
+    .option("b", {
+        alias: "branch",
+        type: "string",
+        describe: "Source branch name",
+        demandOption: true,
+    })
+    .option("rs", {
+        alias: "repos",
+        type: "string",
+        describe: "Comma-separated list of repository slugs",
+        demandOption: false,
+    })
+    .help()
+    .argv;
+
+const repos = argv.rs ? argv.rs.split(",") : DEFAULT_REPO_SLUGS;
+const branchToMerge = argv.b;
+
+async function main() {
+    for (const repo of repos) {
+        const prId = await getPRId(repo, branchToMerge, DESTINATION_BRANCH);
+        console.log(`repo: ${repo}, prId: ${prId}`);
+    }
+}
+
+const authHeader = {
+    Authorization: `Basic ${Buffer.from(`${BITBUCKET_USERNAME}:${BITBUCKET_PASSWORD}`).toString("base64")}`,
+  };
+
+async function getPRId(repoSlug, sourceBranch, destinationBranch) {
+    try {
+      const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${BITBUCKET_PROJECT_KEY}/repos/${repoSlug}/pull-requests?state=OPEN`;
+      const response = await axios.get(url, { headers: authHeader });
+      return response.data.
+                values
+                .filter((pr) => pr.fromRef.displayId === sourceBranch && pr.toRef.displayId === destinationBranch)
+                [0] // there should be always one PR that satisay this condition
+                .id;
+    } catch (error) {
+      console.error(`❌ Error fetching PRs for repo ${repoSlug}:`, error.response?.data || error.message);
+      return [];
+    }
+}
+
+function removePrefixes(word, prefixes) {
+    for (let prefix of prefixes) {
+        if (word.startsWith(prefix)) {
+            return word.replace(prefix, "");
+        }
+    }
+    return word;
+}
+
+main();
