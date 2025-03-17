@@ -58,6 +58,12 @@ const branchToMerge = argv.b;
 async function main() {
     for (const repo of repos) {
         const prInfos = await getPRInfos(repo, branchToMerge, DESTINATION_BRANCH);
+
+        if(!prInfos) {
+            console.error(`There a was problem fetching PR info for ${branchToMerge} branch of ${repo} repo.`);
+            continue;
+        }
+
         await mergePR(repo, branchToMerge, prInfos.id, prInfos.version);
         console.log();
     }
