@@ -36,6 +36,8 @@ const BITBUCKET_PROJECT_KEY = process.env.BITBUCKET_PROJECT_KEY;
 const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
 const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
 
+var repos = DEFAULT_REPO_SLUGS;
+
 const argv = yargs(hideBin(process.argv))
     .option("b", {
         alias: "branch",
@@ -49,17 +51,41 @@ const argv = yargs(hideBin(process.argv))
         describe: "Comma-separated list of repository slugs",
         demandOption: false,
     })
+    .option("be4fe", {
+        type: "boolean",
+        describe: "Flag to operate just with BE4FE repos",
+        demandOption: false,
+    })
+    .option("lib", {
+        type: "boolean",
+        describe: "Flag to operate just with lib repos",
+        demandOption: false,
+    })
+    .conflicts("be4fe", "lib")
+    .conflicts("lib", "rs")
+    .conflicts("rs", "be4fe")
     .help()
     .argv;
 
-const repos = argv.rs ? argv.rs.split(",") : DEFAULT_REPO_SLUGS;
+if (argv.be4fe) {
+    const BE4FE_REPOS = process.env.BE4FE_REPOS.split(",");
+    repos = BE4FE_REPOS;
+}
+else if (argv.lib) {
+    const LIB_REPO = process.env.LIB_REPO;
+    repos = [LIB_REPO];
+}
+else if (argv.rs) {
+    repos = argv.rs.split(",");
+}
+
 const branchToMerge = argv.b;
 
 async function main() {
     for (const repo of repos) {
         const prInfos = await getPRInfos(repo, branchToMerge, DESTINATION_BRANCH);
 
-        if(!prInfos) {
+        if (!prInfos) {
             console.error(`There a was problem fetching PR info for ${branchToMerge} branch of ${repo} repo.`);
             continue;
         }

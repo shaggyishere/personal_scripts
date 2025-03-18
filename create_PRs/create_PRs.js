@@ -38,6 +38,8 @@ const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
 const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
 const POSSIBLE_REVIEWERS = process.env.POSSIBLE_REVIEWERS.split(",");
 
+var repos = DEFAULT_REPO_SLUGS;
+
 if (POSSIBLE_REVIEWERS.length < 2) {
     console.error("Please set at least two possible reviewers using POSSIBLE_REVIEWERS env variable.");
     process.exit(1);
@@ -62,10 +64,34 @@ const argv = yargs(hideBin(process.argv))
         describe: "Comma-separated list of repository slugs",
         demandOption: false,
     })
+    .option("be4fe", {
+        type: "boolean",
+        describe: "Flag to operate just with BE4FE repos",
+        demandOption: false,
+    })
+    .option("lib", {
+        type: "boolean",
+        describe: "Flag to operate just with lib repos",
+        demandOption: false,
+    })
+    .conflicts("be4fe", "lib")
+    .conflicts("lib", "rs")
+    .conflicts("rs", "be4fe")
     .help()
     .argv;
 
-const repos = argv.rs ? argv.rs.split(",") : DEFAULT_REPO_SLUGS;
+if(argv.be4fe) {
+    const BE4FE_REPOS = process.env.BE4FE_REPOS.split(",");
+    repos = BE4FE_REPOS;
+}
+else if (argv.lib) {
+    const LIB_REPO = process.env.LIB_REPO;
+    repos = [LIB_REPO];
+}
+else if (argv.rs) {
+    repos = argv.rs.split(",");
+}
+
 const sourceBranch = argv.b;
 const reviewers = argv.rvw ? argv.rvw.split(",").map((user) => ({ user: { name: user } })) : extractTwoRandomElementsFromList(POSSIBLE_REVIEWERS);
 

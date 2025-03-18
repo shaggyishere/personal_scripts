@@ -29,6 +29,8 @@ This script requires the following environment variables:
 | `BITBUCKET_PASSWORD`   | Your Bitbucket HTTP token (see below)           |
 | `BITBUCKET_PROJECT_KEY`          | The Bitbucket project key                       |
 | `DEFAULT_REPO_SLUGS`   | Comma-separated list of default repositories    |
+| `BE4FE_REPOS`        | (Optional) Comma-separated list of BE4FE repos |
+| `LIB_REPOS`          | (Optional) Lib repo   |
 
 ### 🔑 How to Create a Bitbucket HTTP Token
 
@@ -68,6 +70,8 @@ Run the script using:
 ```sh
 node merge_PRs.js -b <branch_name> --rs <repos>
 ```
+Note that the source branch **is deleted** after merging is completed.
+
 
 ### 🔹 Command-Line Arguments
 
@@ -75,8 +79,13 @@ node merge_PRs.js -b <branch_name> --rs <repos>
 |-------------|----------------------------------------------------------|
 | `-b` / `--branch` | The **source branch** name for the merge                   |
 | `--rs` / `--repos` | **Comma-separated list** of repositories (e.g., `repo1,repo2`) |
+| `--be4fe`          | Flag to operate just with BE4FE repos                          |
+| `--lib`            | Flag to operate just with lib repos                            |
 
-Note that the source branch is deleted after merging is completed.
+
+- `--lib` and `--rs` **cannot** be used together.
+- `--rs` and `--be4fe` **cannot** be used together.
+- If **none** of `--rs`, `--be4fe`, or `--lib` is passed, the script defaults to `DEFAULT_REPO_SLUGS`.
 
 ### ✅ Example Usage
 

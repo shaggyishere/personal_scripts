@@ -30,6 +30,9 @@ This script requires the following environment variables:
 | `BITBUCKET_PROJECT_KEY`          | The Bitbucket project key                                        |
 | `DEFAULT_REPO_SLUGS`   | Comma-separated list of default repositories                     |
 | `POSSIBLE_REVIEWERS`   | Comma-separated list of possible reviewers (UXXXXX values)       |
+| `BE4FE_REPOS`        | (Optional) Comma-separated list of BE4FE repos |
+| `LIB_REPOS`          | (Optional) Lib repo   |
+
 
 ### 🔑 How to Create a Bitbucket HTTP Token
 
@@ -76,12 +79,17 @@ node create_PRs.js -b <branch_name> -rvw <user1,user2> -rs <repo1,repo2>
 | Argument    | Description                                              |
 |-------------|----------------------------------------------------------|
 | `-b` / `--branch` | The **source branch** name for the PR                   |
-| `-rvw` / `--reviewers` | **Comma-separated list** of reviewers (e.g., `UXXXX,UXXXX`) |
-| `-rs` / `--repos` | **Comma-separated list** of repositories (e.g., `repo1,repo2`) |
+| `--rvw` / `--reviewers` | **Comma-separated list** of reviewers (e.g., `UXXXX,UXXXX`) |
+| `--rs` / `--repos` | **Comma-separated list** of repositories (e.g., `repo1,repo2`) |
+| `--be4fe`          | Flag to operate just with BE4FE repos                          |
+| `--lib`            | Flag to operate just with lib repos                            |
 
 Note: 
-* if -rvw flag is not specified, two random reviewers will be chosen from the POSSIBLE_REVIEWERS list.
-* If -rs is not specified, the script will be run on DEFAULT_REPO_SLUGS repositories.
+- if `--rvw` flag is not specified, two random reviewers will be chosen from the `POSSIBLE_REVIEWERS` list.
+- `--be4fe` and `--lib` **cannot** be used together.
+- `--lib` and `--rs` **cannot** be used together.
+- `--rs` and `--be4fe` **cannot** be used together.
+- If **none** of `--rs`, `--be4fe`, or `--lib` is passed, the script defaults to `DEFAULT_REPO_SLUGS`.
 
 ### ✅ Example Usage
 
@@ -106,4 +114,3 @@ This project is open-source. Feel free to modify and enhance it!
 ---
 
 🚀 Happy coding! Let me know if you need further improvements!
-
