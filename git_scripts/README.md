@@ -11,13 +11,14 @@ This script creates a new branch across multiple repositories and pushes it to t
 
 #### Usage:
 ```bash
-sh create_branches.sh -b <branch_name>
+sh create_branches.sh -b <branch_name> -r path-to-myrepo1,path-to-myrepo2
 ```
 
 #### Options:
 - `-h` : Display help message.
 - `-b <branch_name>` : Specify the branch name to create.
 - `-l` : Operate only on the `lib-market-info-v1` repository instead of all default repositories.
+- `-r` : Specify the repos you want to operate as comma string list
 
 #### Behavior:
 - Checks out the `env/svil` branch in each repository.
@@ -34,12 +35,16 @@ This script deletes all local branches except `env/svil` in specified repositori
 sh delete_all_local_dev_branches.sh
 ```
 
+#### Options:
+- `-h` : Display help message.
+- `-r` : Specify the repos you want to operate as comma string list
+
 #### Behavior:
 - Checks out `env/svil`.
 - Deletes all other local branches.
 - Can also operate on specific repositories if passed as arguments:
 ```bash
-sh delete_all_local_dev_branches.sh path-to-myrepo
+sh delete_all_local_dev_branches.sh -r path-to-myrepo1,path-to-myrepo2
 ```
 
 ---
@@ -55,11 +60,12 @@ sh update_repos.sh
 #### Options:
 - `-h` : Display help message.
 - `-b <branch_name>` : Specify the branch to checkout before updating (default: `env/svil`).
-- `-r` : Add an empty `RELEASE` commit and push it.
+- `-R` : Add an empty `RELEASE` commit and push it.
 - `-l` : Operate only on the `lib-market-info-v1` repository.
+- `-r` : Specify the repos you want to operate as comma string list
 
 #### Behavior:
 - Fetches updates.
 - Checks out the specified branch and pulls updates.
-- If `-r` is used, creates an empty commit with the message `RELEASE` and pushes it.
+- If `-R` is used, creates an empty commit with the message `RELEASE` and pushes it.
 

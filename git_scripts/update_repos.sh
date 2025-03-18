@@ -5,9 +5,9 @@ release_option=false
 help_option=false
 branch="env/svil"
 
-while getopts "b:rhl" flags; do
+while getopts "b:Rhl" flags; do
     case "$flags" in
-        r)
+        R)
             release_option=true
             ;;
         h)
@@ -16,6 +16,9 @@ while getopts "b:rhl" flags; do
         b)
             branch=$OPTARG
             ;;
+        r)
+            IFS=',' read -r -a repos <<< "$OPTARG"
+            ;;
         l)
             repos=("../lib-market-info-v1/")
             ;;
@@ -23,20 +26,21 @@ while getopts "b:rhl" flags; do
 done
 
 if [ "$help_option" = true ]; then
-    echo "Usage: $0 [-r] [-h] [-b branch_name]"
+    echo "Usage: $0 [-R] [-h] [-b branch_name]"
     echo "This script is intended to be used when a CR lifecycle is being closed (merged from PR) and the env/svil branch is to be updated to the origin" 
     echo "This script will perform the same operations for all three be4fe (or just the lib repo if -l is passed)!"
     echo "Options:"
     echo "  -l    to operate the updates only into lib-market-info's repo"
-    echo "  -r    add a RELEASE comment on top and push it to origin"
+    echo "  -R    add a RELEASE comment on top and push it to origin"
     echo "  -h    Display this help message"
     echo "  -b    to set a specific branch to checkout into"
+    echo "  -r    path repo list (E.G. ../my-repo)"
     exit 0
 fi
 
 for repo in "${repos[@]}"; do
 
-    echo "Updating $repo..."
+    echo "Updating $repo"
 
     git -C "$repo" fetch
     git -C "$repo" checkout "$branch"
