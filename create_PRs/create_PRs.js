@@ -93,7 +93,7 @@ else if (argv.rs) {
 }
 
 const sourceBranch = argv.b;
-const reviewers = argv.rvw ? argv.rvw.split(",").map((user) => ({ user: { name: user } })) : extractTwoRandomElementsFromList(POSSIBLE_REVIEWERS);
+const reviewers = argv.rvw ? transformStringListToReviewersList(argv.rvw) : transformStringListToReviewersList(extractTwoRandomElementsFromList(POSSIBLE_REVIEWERS));
 
 async function main() {
     for (const repo of repos) {
@@ -115,8 +115,7 @@ async function createPullRequest(repoSlug, sourceBranch, reviewers) {
             }
         });
 
-        console.log(`✅ PR Created Successfully for repo: ${repoSlug}`);
-        console.log(response.data);
+        console.log(`✅ PR #${response.data.id} Created Successfully for repo: ${repoSlug}`);
     } catch (error) {
         if (error.response) {
             console.error("❌ Error creating PR:");
@@ -182,6 +181,13 @@ function extractTwoRandomElementsFromList(arr, count = 2) {
     }
 
     return [...result];
+}
+
+function transformStringListToReviewersList(reviewersStringList) {
+    return reviewersStringList
+            .toString()
+            .split(",")
+            .map((user) => ({ user: { name: user } }));
 }
 
 main();
