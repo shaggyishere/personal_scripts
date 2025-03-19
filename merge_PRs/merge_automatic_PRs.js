@@ -72,9 +72,9 @@ async function mergePR(repoSlug, prId, prVersion) {
         const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${BITBUCKET_PROJECT_KEY}/repos/${repoSlug}/pull-requests/${prId}/merge`;
         await axios.post(url, { version: prVersion }, { headers: authHeader });
 
-        console.log(`✅ Automatic PR ${prId} merged successfully in ${repoSlug}.`);
+        console.log(`✅ Automatic PR #${prId} merged successfully in ${repoSlug}.`);
     } catch (error) {
-        console.error(`❌ Failed to merge PR ${prId} in ${repoSlug}:`, error.response?.data || error.message);
+        console.error(`❌ Failed to merge PR #${prId} in ${repoSlug}:`, error.response?.data || error.message);
     }
 }
 

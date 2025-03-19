@@ -119,11 +119,11 @@ async function mergePR(repoSlug, branchToMerge, prId, prVersion) {
         const response = await axios.post(url, { version: prVersion }, { headers: authHeader });
 
         if (response.status === 200) {
-            console.log(`✅ PR ${prId} merged successfully in ${repoSlug}.`);
+            console.log(`✅ PR #${prId} merged successfully in ${repoSlug}.`);
             await deleteBranch(repoSlug, branchToMerge);
         }
     } catch (error) {
-        console.error(`❌ Failed to merge PR ${prId} in ${repoSlug}:`, error.response?.data || error.message);
+        console.error(`❌ Failed to merge PR #${prId} in ${repoSlug}:`, error.response?.data || error.message);
     }
 }
 
