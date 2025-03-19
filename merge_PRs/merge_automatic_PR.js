@@ -15,7 +15,8 @@ const REQUIRED_ENV_VARS = [
     "BITBUCKET_PASSWORD",
     "BITBUCKET_PROJECT_KEY",
     "DESTINATION_BRANCH",
-    "LIB_REPO"
+    "LIB_REPO",
+    "AUTO_PR_USERNAME"
 ];
 
 const missingVars = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
@@ -33,9 +34,10 @@ const BITBUCKET_PASSWORD = process.env.BITBUCKET_PASSWORD;
 const BITBUCKET_PROJECT_KEY = process.env.BITBUCKET_PROJECT_KEY;
 const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
 const LIB_REPO = process.env.LIB_REPO;
+const AUTO_PR_USERNAME = process.env.AUTO_PR_USERNAME;
 
 async function main() {
-    const PRsInfos = await getPRsInfos(LIB_REPO, "master", DESTINATION_BRANCH);
+    const PRsInfos = await getPRsInfos(LIB_REPO, "master", DESTINATION_BRANCH, AUTO_PR_USERNAME);
 
     if (!PRsInfos) {
         console.error(`There a was problem fetching automatic PRs for ${LIB_REPO} repo.`);
@@ -52,13 +54,13 @@ const authHeader = {
     Authorization: `Basic ${Buffer.from(`${BITBUCKET_USERNAME}:${BITBUCKET_PASSWORD}`).toString("base64")}`,
 };
 
-async function getPRsInfos(repoSlug, sourceBranch, destinationBranch) {
+async function getPRsInfos(repoSlug, sourceBranch, destinationBranch, autoPrUsername) {
     try {
         const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${BITBUCKET_PROJECT_KEY}/repos/${repoSlug}/pull-requests?state=OPEN`;
         const response = await axios.get(url, { headers: authHeader });
         return response.data
             .values
-            .filter((pr) => pr.author.user.name === "vobadm" && pr.fromRef.displayId === sourceBranch && pr.toRef.displayId === destinationBranch);
+            .filter((pr) => pr.author.user.name === autoPrUsername && pr.fromRef.displayId === sourceBranch && pr.toRef.displayId === destinationBranch);
     } catch (error) {
         console.error(`❌ Error fetching PRs for repo ${repoSlug}:`, error.response?.data || error.message);
         return [];
