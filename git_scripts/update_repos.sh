@@ -5,7 +5,7 @@ release_option=false
 help_option=false
 branch="env/svil"
 
-while getopts "b:Rhl" flags; do
+while getopts "b:r:Rhl" flags; do
     case "$flags" in
         R)
             release_option=true
