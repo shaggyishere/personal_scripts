@@ -32,8 +32,72 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+*.code-workspace
+
 
 # Dependency lock files (optional)
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+# Byte-compiled / cached files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+env/
+.venv/
+
+# Dependency files
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Environment variables and secrets
+secrets.json
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# MyPy and Pyright
+.mypy_cache/
+.pyright/
+
+# Testing and coverage reports
+.tox/
+.nox/
+.coverage
+.coverage.*
+*.cover
+.hypothesis/
+pytest_cache/
+nosetests.xml
+coverage.xml
+*.pytest_cache
+*.mo
+junit.xml
+
+# Build and distribution files
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# Cython and compiled extensions
+*.so
+*.pyd
+*.dll
+*.o
+*.a
+
+# PyCharm
+.idea/
+*.iml
