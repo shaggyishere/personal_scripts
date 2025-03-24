@@ -23,17 +23,13 @@ def check_env_variables():
     missing_vars = [var for var in required_env_vars if not os.getenv(var)]
 
     if missing_vars:
-        raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
+        print(f"Missing required environment variables: {', '.join(missing_vars)}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     load_dotenv()
 
-    try:
-        check_env_variables()
-
-    except EnvironmentError as e:
-        print(e)
-        sys.exit(1)
+    check_env_variables()
 
     auth_payload_str = os.getenv("AUTH_PAYLOAD")
     session_manager_payload_str = os.getenv("SESSION_MANAGER_PAYLOAD")

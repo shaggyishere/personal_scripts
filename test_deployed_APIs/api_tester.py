@@ -8,13 +8,6 @@ from urllib.parse import urljoin
 
 class APITester:
     def __init__(self, config: APITesterConfig):
-        """
-        Initializes the API tester.
-
-        :param base_url: The common base URL for all APIs.
-        :param api_list: A list of dictionaries containing API details.
-        :param auth_token: Optional JWT token for authentication.
-        """
         self.results = {}
         self.config = config
         self.status_log = {"200": [], "500": [], "Other": {}}
@@ -24,7 +17,6 @@ class APITester:
         self.api_test_file = os.path.join(script_dir, "apis_to_test.json")
 
     def authenticate(self):
-        """Obtain JWT token from the authentication endpoint."""
         try:
 
             headers = {
@@ -82,24 +74,27 @@ class APITester:
 
 
     def test_apis(self):
+        total_response_time = None
+
         with open(self.api_test_file, "r") as file:
             api_tests = json.load(file)
 
-        """Tests all APIs and logs their responses and status codes."""
-        for api_info in api_tests:
-            self._test_single_api(api_info)
+        logging.info(f"--------------------------------------------begin script run -------------------------------------------------")
 
-        self._save_results("api_responses.json", self.results)
-        self._save_results("api_status_log.json", self.status_log)
+        try:
 
-        print("API testing completed. Check log files for more infos.")
+            for api_info in api_tests:
+                total_response_time = (total_response_time or 0.0) + self._test_single_api(api_info)
+
+            self._save_results("api_responses.json", self.results)
+            self._save_results("api_status_log.json", self.status_log)
+
+        finally:
+            logging.info(f"--------------------------------------------end script run ---------------------------------------------------")
+
+        print(f"API testing completed. Total duration time: {round(total_response_time, 2)}s. Check log files for more infos.")
 
     def _test_single_api(self, api_info):
-        """
-        Tests a single API based on provided details.
-
-        :param api_info: Dictionary containing 'endpoint', 'method', 'payload', and 'headers'.
-        """
         api_route = api_info['route']
         url = f"{self.config.base_url.rstrip('/')}{api_route}"
         method = api_info.get("method", "GET").upper()
@@ -120,12 +115,12 @@ class APITester:
             response_time = round(time() - start_time, 3)  # Response time in seconds
 
             self.results[api_route] = {
+                "query_param": query_params,
                 "status_code": response.status_code,
                 "response_time_sec": response_time,
-                "response": response.json() if response.status_code == 200 else {}
+                "response": response.json() if response.status_code in {200, 400, 500} else {}
             }
 
-            # Categorize API response status
             if response.status_code == 200:
                 self.status_log["200"].append(api_route)
             elif response.status_code == 500:
@@ -135,11 +130,12 @@ class APITester:
 
             logging.info(f"API: {api_route}, Method: {method}, Status: {response.status_code}, Time: {response_time}s")
 
+            return response_time
+
         except requests.RequestException as e:
             self.results[api_route] = {"error": str(e)}
             logging.error(f"API: {api_route} failed with error: {str(e)}")
 
     def _save_results(self, filename, data):
-        """Saves results to a JSON file."""
         with open(filename, "w") as file:
             json.dump(data, file, indent=4)
