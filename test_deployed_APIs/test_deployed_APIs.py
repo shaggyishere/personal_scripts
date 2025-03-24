@@ -13,8 +13,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler("api_test.log"),
-        logging.StreamHandler()
+        logging.FileHandler("api_test.log")
     ]
 )
 
@@ -41,16 +40,8 @@ if __name__ == "__main__":
     AUTH_PAYLOAD =  json.loads(auth_payload_str) if auth_payload_str else {}
     SESSION_MANAGER_PAYLOAD =  json.loads(session_manager_payload_str) if session_manager_payload_str else {}
 
-    api_list = [
-        {"endpoint": "/get-endpoint", "method": "GET"},
-        {"endpoint": "/post-endpoint", "method": "POST", "payload": {"key": "value"}},
-        {"endpoint": "/put-endpoint", "method": "PUT", "payload": {"update": "new data"}},
-        {"endpoint": "/delete-endpoint", "method": "DELETE"},
-    ]
-
-    config = APITesterConfig(
+    configs = APITesterConfig(
         os.getenv("BASE_URL"),
-        api_list,
         os.getenv("AUTH_URL"),
         os.getenv("SESSION_MANAGER_URL"),
         AUTH_PAYLOAD,
@@ -58,6 +49,7 @@ if __name__ == "__main__":
         os.getenv("AUTH_BASIC_AUTH_HEADER")
     )
 
-    tester = APITester(config)
-    tester.authenticate()
-    # tester.test_apis()
+    api_tester = APITester(configs)
+    api_tester.authenticate()
+    api_tester.create_session()
+    api_tester.test_apis()
