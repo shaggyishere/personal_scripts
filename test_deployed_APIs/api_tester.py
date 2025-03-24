@@ -2,27 +2,22 @@ import requests
 import json
 import logging
 from time import time
+from api_tester_config import APITesterConfig
 from urllib.parse import urljoin
 
 class APITester:
-    def __init__(self, base_url, api_requests, auth_endpoint, auth_payload, auth_basic_auth_header):
+    def __init__(self, config: APITesterConfig):
         """
         Initializes the API tester.
 
         :param base_url: The common base URL for all APIs.
-        :param api_requests: A list of dictionaries containing API details.
+        :param api_list: A list of dictionaries containing API details.
         :param auth_token: Optional JWT token for authentication.
         """
-        self.base_url = base_url.rstrip("/")
-        self.api_requests = api_requests
         self.results = {}
+        self.config = config
         self.status_log = {"200_OK": [], "500_Internal_Server_Error": [], "Other_Statuses": {}}
         self.session = requests.Session()
-
-        self.auth_endpoint = auth_endpoint
-        self.auth_payload = auth_payload
-        self.auth_basic_auth_header = auth_basic_auth_header
-
 
     def authenticate(self):
         """Obtain JWT token from the authentication endpoint."""
@@ -30,13 +25,13 @@ class APITester:
 
             headers = {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "User-Agent": "MyAPITester/1.0",
-                "Authorization": self.auth_basic_auth_header
+                "User-Agent": "APITester/1.0",
+                "Authorization": self.config.auth_basic_auth_header
             }
 
             response = self.session.post(
-                self.auth_endpoint,
-                data=self.auth_payload,
+                self.config.auth_url,
+                data=self.config.auth_payload,
                 headers=headers,
                 verify=False
             )
@@ -56,7 +51,7 @@ class APITester:
 
     def test_apis(self):
         """Tests all APIs and logs their responses and status codes."""
-        for api_info in self.api_requests:
+        for api_info in self.config.api_list:
             self._test_single_api(api_info)
 
         self._save_results("api_responses.json", self.results)
