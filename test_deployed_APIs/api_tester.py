@@ -17,10 +17,11 @@ class APITester:
         """
         self.results = {}
         self.config = config
-        script_dir = os.path.dirname(os.path.abspath(__file__)) 
-        self.api_test_file = os.path.join(script_dir, "apis_to_test.json")
         self.status_log = {"200": [], "500": [], "Other": {}}
         self.session = requests.Session()
+
+        script_dir = os.path.dirname(os.path.abspath(__file__)) 
+        self.api_test_file = os.path.join(script_dir, "apis_to_test.json")
 
     def authenticate(self):
         """Obtain JWT token from the authentication endpoint."""
@@ -119,7 +120,6 @@ class APITester:
             response_time = round(time() - start_time, 3)  # Response time in seconds
 
             self.results[api_route] = {
-                "method": method,
                 "status_code": response.status_code,
                 "response_time_sec": response_time,
                 "response": response.json() if response.status_code == 200 else {}
