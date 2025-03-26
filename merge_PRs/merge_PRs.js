@@ -91,7 +91,6 @@ async function main() {
         }
 
         await mergePR(repo, branchToMerge, prInfos.id, prInfos.version);
-        console.log();
     }
 }
 

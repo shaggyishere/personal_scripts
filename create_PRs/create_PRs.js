@@ -99,7 +99,6 @@ const reviewers = argv.rvw ? transformStringListToReviewersList(argv.rvw) : tran
 async function main() {
     for (const repo of repos) {
         createPullRequest(repo, sourceBranch, reviewers);
-        console.log();
     }
 }
 
