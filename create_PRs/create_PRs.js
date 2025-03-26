@@ -37,10 +37,11 @@ const BITBUCKET_PROJECT_KEY = process.env.BITBUCKET_PROJECT_KEY;
 const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
 const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
 const POSSIBLE_REVIEWERS = process.env.POSSIBLE_REVIEWERS.split(",");
+const MIN_NUMBER_OF_REVIEWERS = Number(process.env.MIN_NUMBER_OF_REVIEWERS) || 2;
 
 var repos = DEFAULT_REPO_SLUGS;
 
-if (POSSIBLE_REVIEWERS.length < 2) {
+if (POSSIBLE_REVIEWERS.length < MIN_NUMBER_OF_REVIEWERS) {
     console.error("Please set at least two possible reviewers using POSSIBLE_REVIEWERS env variable.");
     process.exit(1);
 }
@@ -93,7 +94,7 @@ else if (argv.rs) {
 }
 
 const sourceBranch = argv.b;
-const reviewers = argv.rvw ? transformStringListToReviewersList(argv.rvw) : transformStringListToReviewersList(extractTwoRandomElementsFromList(POSSIBLE_REVIEWERS));
+const reviewers = argv.rvw ? transformStringListToReviewersList(argv.rvw) : transformStringListToReviewersList(extractRandomElementsFromList(POSSIBLE_REVIEWERS, MIN_NUMBER_OF_REVIEWERS));
 
 async function main() {
     for (const repo of repos) {
@@ -168,14 +169,14 @@ function removePrefixes(word, prefixes) {
     return word;
 }
 
-function extractTwoRandomElementsFromList(arr, count = 2) {
-    if (arr.length < count) {
+function extractRandomElementsFromList(arr, numberOfElementsToExtract) {
+    if (arr.length < numberOfElementsToExtract) {
         console.error("The following array should contain at least two element: ", arr);
         process.exit(1);
     }
 
     const result = new Set();
-    while (result.size < count) {
+    while (result.size < numberOfElementsToExtract) {
         const randomIndex = Math.floor(Math.random() * arr.length);
         result.add(arr[randomIndex]);
     }
