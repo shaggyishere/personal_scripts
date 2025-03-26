@@ -49,23 +49,31 @@ The script dynamically loads API test configurations from `apis_to_test.json`. T
 #### **Example `apis_to_test.json`**
 ```json
 [
-  {
-    "method": "GET",
-    "route": "/users",
-    "headers": {"Accept": "application/json"},
-    "query_params": {"status": "active"}
-  },
-  {
-    "method": "POST",
-    "route": "/login",
-    "body": {"username": "test", "password": "1234"}
-  }
+    {
+        "method": "GET",
+        "route": "/api/v1/users",
+        "headers": {"Accept": "application/json"},
+        "query_params": {"page": 1, "limit": 10}
+    },
+    {
+        "method": "POST",
+        "route": "/api/v1/users",
+        "headers": {"Content-Type": "application/json"},
+        "body": {"name": "John Doe", "email": "john@example.com"}
+    },
+    {
+        "method": "GET",
+        "route": "/api/v1/orders",
+        "headers": {"Accept": "application/json"},
+        "query_params": {"status": "pending", "customer_id": 123}
+    }
 ]
 ```
 
 - **`method`** → HTTP method (`GET`, `POST`, `PUT`, etc.)
 - **`route`** → API route (relative to `BASE_URL`)
-- **`params`** → Query parameters (for `GET` requests)
+- **`query_params`** → Query parameters
+- **`headers`** → HTTP headers
 - **`body`** → JSON payload (for `POST/PUT` requests)
 
 #### **⚠️ Avoid Committing `apis_to_test.json`**
@@ -99,4 +107,4 @@ python test_deployed_APIs.py
 ---
 
 ## 📜 License
-This project is **open-source**.
+This project is open to contribution. Feel free to open a PR.
