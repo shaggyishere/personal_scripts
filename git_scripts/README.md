@@ -27,7 +27,28 @@ sh create_branches.sh -b <branch_name> -r path-to-myrepo1,path-to-myrepo2
 
 ---
 
-### 2. `delete_all_local_dev_branches.sh`
+### 2. `show_all_local_dev_branches.sh`
+This script shows all local branches except `env/svil` in specified repositories. (Preferibly use it before `delete_all_local_dev_branches.sh`)
+
+#### Usage:
+```bash
+sh show_all_local_dev_branches.sh
+```
+
+#### Options:
+- `-h` : Display help message.
+- `-r` : Specify the repos you want to operate as comma string list
+
+#### Behavior:
+- Shows all other local branches.
+- Can also operate on specific repositories if passed as arguments:
+```bash
+sh show_all_local_dev_branches.sh -r path-to-myrepo1,path-to-myrepo2
+```
+
+---
+
+### 3. `delete_all_local_dev_branches.sh`
 This script deletes all local branches except `env/svil` in specified repositories.
 
 #### Usage:
@@ -49,7 +70,7 @@ sh delete_all_local_dev_branches.sh -r path-to-myrepo1,path-to-myrepo2
 
 ---
 
-### 3. `update_repos.sh`
+### 4. `update_repos.sh`
 This script updates specified repositories by fetching the latest changes and optionally adding a `RELEASE` commit.
 
 #### Usage:
