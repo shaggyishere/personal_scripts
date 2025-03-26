@@ -1,4 +1,4 @@
-# API Tester
+# Test deployed APIs
 
 ## 📌 Overview
 This script is designed to **test a suite of deployed APIs** from a given `BASE_URL`. It automates the following steps before executing API tests:
@@ -77,10 +77,10 @@ This ensures your local modifications to the test API file don’t get committed
 
 ---
 
-## 🚀 Running the API Tester
+## 🚀 Running the script
 Once dependencies are installed and configurations are set up, you can run the script:
 ```bash
-python api_tester.py
+python test_deployed_APIs.py
 ```
 
 ---
