@@ -14,13 +14,17 @@ This script is designed to **test a suite of deployed APIs** from a given `BASE_
 ```bash
 pip install -r requirements.txt
 ```
-
 ---
 
 ## 🌍 Setting Up Environment Variables
-This script requires a `.env` file containing necessary configurations. Create a `.env` file in the project root with the following variables:
+This script requires a `.env.<microservice>.<environment>` file containing necessary configurations. The correct `.env` file is loaded dynamically based on the environment specified when running the script.
 
-#### **📌 `.env` Configuration**
+### **📌 Environment Configuration**
+Create environment-specific `.env` files in the project root with the following naming convention:
+- `.env.mobile.svil` → Svil environment for mobile runtime
+- `.env.mobile.test` → Testing environment for mobile runtime
+
+#### **Example `.env.dev` Configuration**
 ```ini
 BASE_URL=https://api.example.com
 AUTH_URL=https://auth.example.com
@@ -88,8 +92,9 @@ This ensures your local modifications to the test API file don’t get committed
 ## 🚀 Running the script
 Once dependencies are installed and configurations are set up, you can run the script:
 ```bash
-python test_deployed_APIs.py
+python test_deployed_APIs.py <microservice> <environment>
 ```
+Note that the script will fail if no `<environment>` or `<microservice>` is passed.
 
 ---
 
