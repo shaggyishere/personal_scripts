@@ -7,13 +7,12 @@ from api_tester_config import APITesterConfig
 from urllib.parse import urljoin
 
 class APITester:
-    def __init__(self, config: APITesterConfig):
+    def __init__(self, configs: APITesterConfig, script_dir):
         self.results = {}
-        self.config = config
+        self.config = configs
         self.status_log = {"200": [], "500": [], "Other": {}}
         self.session = requests.Session()
-
-        script_dir = os.path.dirname(os.path.abspath(__file__)) 
+        self.script_dir = script_dir
         self.api_test_file = os.path.join(script_dir, "apis_to_test.json")
 
     def authenticate(self):
