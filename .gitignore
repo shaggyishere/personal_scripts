@@ -105,4 +105,4 @@ dist/
 # Script utils file
 **/api_responses.json
 **/api_status_log.json
-# **/apis_to_test.json
+**/apis_to_test.json
