@@ -15,7 +15,7 @@ class APITester:
         self.script_dir = script_dir
         self.microservice = microservice
         self.env = env
-        self.api_test_file = os.path.join(script_dir, "apis_to_test.json")
+        self.api_test_file = os.path.join(script_dir, "apis_to_test_golia.json") if microservice == "golia" else os.path.join(script_dir, "apis_to_test.json")
 
     def authenticate(self):
         try:
