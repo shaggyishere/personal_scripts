@@ -12,6 +12,7 @@ This script is designed to **test a suite of deployed APIs** from a given `BASE_
 ## ⚙️ Installation
 ### **1️⃣ Install Dependencies using `requirements.txt`**
 ```bash
+cd personal-scripts/test_deployed_APIs/
 pip install -r requirements.txt
 ```
 ---

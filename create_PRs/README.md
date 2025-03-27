@@ -48,7 +48,6 @@ After creating a token, set the `BITBUCKET_PASSWORD` environment variable to the
 Clone this repository and install the required dependencies:
 
 ```sh
-git clone https://this-repo-url.git
 cd personal-scripts/create_PRs/
 npm install
 ```

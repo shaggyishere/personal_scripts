@@ -14,7 +14,7 @@ This repository contains a collection of scripts designed to automate various wo
 To use any of these scripts, clone the repository and navigate to the desired script's directory:
 
 ```bash
-git clone https://github.com/shaggyishere/personal_scripts.git
+git clone https://this-repo-url.git
 cd personal_scripts/<script_directory>
 ```
 
