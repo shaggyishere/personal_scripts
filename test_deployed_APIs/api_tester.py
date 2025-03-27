@@ -7,12 +7,14 @@ from api_tester_config import APITesterConfig
 from urllib.parse import urljoin
 
 class APITester:
-    def __init__(self, configs: APITesterConfig, script_dir):
+    def __init__(self, configs: APITesterConfig, script_dir, microservice, env):
         self.results = {}
         self.config = configs
         self.status_log = {"200": [], "500": [], "Other": {}}
         self.session = requests.Session()
         self.script_dir = script_dir
+        self.microservice = microservice
+        self.env = env
         self.api_test_file = os.path.join(script_dir, "apis_to_test.json")
 
     def authenticate(self):
@@ -51,18 +53,45 @@ class APITester:
                 "User-Agent": "APITester/1.0"
             }
 
-            response = self.session.post(
-                self.config.session_manager_url,
-                json=self.config.session_manager_payload,
-                headers=headers,
-                verify=False
-            )
+            self.session_id = ""
 
-            response.raise_for_status()
-            self.session_id = response.json().get("sessionId")
+            if self.microservice == "golia":
+                # creating session
+                response = self.session.post(
+                    f"{self.config.session_manager_url}/api/session",
+                    json=self.config.golia_session_manager_create_payload,
+                    headers=headers,
+                    verify=False
+                )
 
-            if not self.session_id:
-                raise ValueError("Error creating session with session manager.")
+                response.raise_for_status()
+                self.session_id = response.json().get("payload")
+
+                if not self.session_id:
+                    raise ValueError("Error creating session with session manager.")
+
+                # updating session
+                response = self.session.post(
+                    f"{self.config.session_manager_url}/api/session/customer/{self.session_id}",
+                    json=self.config.golia_session_manager_update_payload,
+                    headers=headers,
+                    verify=False
+                )
+
+                response.raise_for_status()
+            else:
+                response = self.session.post(
+                    self.config.session_manager_url,
+                    json=self.config.session_manager_payload,
+                    headers=headers,
+                    verify=False
+                )
+
+                response.raise_for_status()
+                self.session_id = response.json().get("sessionId")
+
+                if not self.session_id:
+                    raise ValueError("Error creating session with session manager.")
             
             self.session.headers.update({"X-BEAR-SESSION-TOKEN": self.session_id})
             print(f"Session created succesfully. session_id: {self.session_id}")
@@ -79,6 +108,7 @@ class APITester:
             api_tests = json.load(file)
 
         logging.info(f"--------------------------------------------begin script run -------------------------------------------------")
+        logging.info(f"microservice: {self.microservice}, env: {self.env}")
 
         try:
 

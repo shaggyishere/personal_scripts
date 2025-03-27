@@ -27,8 +27,11 @@ def load_configurations(microservice, env_name, script_dir):
     
     load_dotenv(dot_env_file_path)
 
-def check_config_variables():
-    required_env_vars = ["BASE_URL", "AUTH_URL", "SESSION_MANAGER_URL", "AUTH_PAYLOAD", "SESSION_MANAGER_PAYLOAD", "AUTH_BASIC_AUTH_HEADER"]
+def check_config_variables(microservice):
+    required_env_vars = ["BASE_URL", "AUTH_URL", "SESSION_MANAGER_URL", "AUTH_PAYLOAD", "AUTH_BASIC_AUTH_HEADER"]
+
+    # two different env vars are valued if microservice is golia or the other ones
+    required_env_vars += ["GOLIA_SESSION_MANAGER_CREATE_PAYLOAD", "GOLIA_SESSION_MANAGER_UPDATE_PAYLOAD"] if microservice == "golia" else ["SESSION_MANAGER_PAYLOAD"]
 
     missing_vars = [var for var in required_env_vars if not os.getenv(var)]
 
@@ -48,12 +51,16 @@ if __name__ == "__main__":
 
     load_configurations(microservice, env, script_dir)
 
-    check_config_variables()
+    check_config_variables(microservice)
 
     auth_payload_str = os.getenv("AUTH_PAYLOAD")
     session_manager_payload_str = os.getenv("SESSION_MANAGER_PAYLOAD")
+    golia_session_manager_create_payload_str = os.getenv("GOLIA_SESSION_MANAGER_CREATE_PAYLOAD")
+    golia_session_manager_update_payload_str = os.getenv("GOLIA_SESSION_MANAGER_UPDATE_PAYLOAD")
     AUTH_PAYLOAD =  json.loads(auth_payload_str) if auth_payload_str else {}
     SESSION_MANAGER_PAYLOAD =  json.loads(session_manager_payload_str) if session_manager_payload_str else {}
+    GOLIA_SESSION_MANAGER_CREATE_PAYLOAD =  json.loads(golia_session_manager_create_payload_str) if golia_session_manager_create_payload_str else {}
+    GOLIA_SESSION_MANAGER_UPDATE_PAYLOAD =  json.loads(golia_session_manager_update_payload_str) if golia_session_manager_update_payload_str else {}
 
     configs = APITesterConfig(
         os.getenv("BASE_URL"),
@@ -61,10 +68,12 @@ if __name__ == "__main__":
         os.getenv("SESSION_MANAGER_URL"),
         AUTH_PAYLOAD,
         SESSION_MANAGER_PAYLOAD,
+        GOLIA_SESSION_MANAGER_CREATE_PAYLOAD,
+        GOLIA_SESSION_MANAGER_UPDATE_PAYLOAD,
         os.getenv("AUTH_BASIC_AUTH_HEADER")
     )
 
-    api_tester = APITester(configs, script_dir)
+    api_tester = APITester(configs, script_dir, microservice, env)
     api_tester.authenticate()
     api_tester.create_session()
     api_tester.test_apis()
