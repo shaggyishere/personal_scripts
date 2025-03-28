@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ---
 
 ## 🌍 Setting Up Environment Variables
-This script requires a `.env.<microservice>.<environment>` file containing necessary configurations. The correct `.env` file is loaded dynamically based on the environment specified when running the script.
+This script requires a `.env.<microservice>.<environment>` file containing necessary configurations. The correct `.env` file is loaded dynamically based on the environment specified when running the script. The `.env` files should be put in a directory called `api_configs/`. 
 
 ### **📌 Environment Configuration**
 Create environment-specific `.env` files in the project root with the following naming convention:
@@ -49,7 +49,7 @@ These variables define:
 
 ## 📋 Configuring API Tests
 ### **2️⃣ Modify `apis_to_test.json` to Specify API Endpoints**
-The script dynamically loads API test configurations from `apis_to_test.json`. This file must be modified to specify which APIs should be tested.
+The script dynamically loads API test configurations from `api_configs/apis_to_test.json`. This file must be modified to specify which APIs should be tested.
 
 #### **Example `apis_to_test.json`**
 ```json
