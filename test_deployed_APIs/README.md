@@ -45,6 +45,16 @@ These variables define:
 - **`SESSION_MANAGER_PAYLOAD`** → The session manager request body.
 - **`AUTH_BASIC_AUTH_HEADER`** → Base64-encoded basic authentication header.
 
+### 🛠️ Retrieving Config Files Using Git Submodule
+
+This project uses Git Submodules to securely manage .env configuration files from a separate repository. To retrieve .env and api_to_test.json files, run this command:
+
+```bash
+git submodule update --init --recursive
+```
+
+This command will pull all the correct configs into the `api_configs/` directory within your project.
+
 ---
 
 ## 📋 Configuring API Tests
