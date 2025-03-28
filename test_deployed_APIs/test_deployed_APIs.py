@@ -19,7 +19,7 @@ logging.basicConfig(
 
 def load_configurations(microservice, env_name, script_dir):
     dot_env_file_name = f".env.{microservice}.{env_name}"
-    dot_env_file_path = os.path.join(script_dir, dot_env_file_name)
+    dot_env_file_path = os.path.join(script_dir, "api_configs", dot_env_file_name)
     
     if not os.path.exists(dot_env_file_path):
         print(f"Error: Environment file '{dot_env_file_name}' not found!")
