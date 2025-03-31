@@ -91,13 +91,6 @@ The script dynamically loads API test configurations from `api_configs/apis_to_t
 - **`headers`** → HTTP headers
 - **`body`** → JSON payload (for `POST/PUT` requests)
 
-#### **⚠️ Avoid Committing `apis_to_test.json`**
-If you plan to contribute to the source code, remember to **avoid staging `apis_to_test.json` for commits** by running the following command locally:
-```bash
-git update-index --assume-unchanged ./apis_to_test.json
-```
-This ensures your local modifications to the test API file don’t get committed accidentally.
-
 ---
 
 ## 🚀 Running the script
