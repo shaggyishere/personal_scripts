@@ -15,7 +15,7 @@ class APITester:
         self.script_dir = script_dir
         self.microservice = microservice
         self.env = env
-        self.api_test_file = os.path.join(script_dir, "apis_to_test_golia.json") if microservice == "golia" else os.path.join(script_dir, "apis_to_test.json")
+        self.api_test_file = os.path.join(script_dir, "api_configs", "apis_to_test_golia.json") if microservice == "golia" else os.path.join(script_dir, "api_configs", "apis_to_test.json")
 
     def authenticate(self):
         try:
@@ -143,6 +143,8 @@ class APITester:
 
             response_time = round(time() - start_time, 3)  # Response time in seconds
 
+            self.results["microservice"] = self.microservice
+            self.results["env"] = self.env
             self.results[api_route] = {
                 "query_param": query_params,
                 "status_code": response.status_code,
@@ -150,6 +152,8 @@ class APITester:
                 "response": response.json() if response.status_code in {200, 400, 500} else {}
             }
 
+            self.status_log["microservice"] = self.microservice
+            self.status_log["env"] = self.env
             if response.status_code == 200:
                 self.status_log["200"].append(api_route)
             elif response.status_code == 500:
