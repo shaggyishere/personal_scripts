@@ -115,8 +115,8 @@ class APITester:
             for api_info in api_tests:
                 total_response_time = (total_response_time or 0.0) + self._test_single_api(api_info)
 
-            self._save_results("api_responses.json", self.results)
-            self._save_results("api_status_log.json", self.status_log)
+            self._save_results(f"api_responses_{self.microservice}_{self.env}.json", self.results)
+            self._save_results(f"api_status_log_{self.microservice}_{self.env}.json", self.status_log)
 
         finally:
             logging.info(f"--------------------------------------------end script run ---------------------------------------------------")

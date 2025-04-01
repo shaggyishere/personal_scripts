@@ -99,6 +99,6 @@ dist/
 *.iml
 
 # Script utils file
-**/api_responses.json
-**/api_status_log.json
+**/api_responses*.json
+**/api_status_log*.json
 **/apis_to_test*.json
