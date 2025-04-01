@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import logging
+import uuid
 from time import time
 from api_tester_config import APITesterConfig
 from urllib.parse import urljoin
@@ -80,6 +81,8 @@ class APITester:
 
                 response.raise_for_status()
             else:
+                self.config.session_manager_payload["sessionId"] = str(uuid.uuid4())
+
                 response = self.session.post(
                     self.config.session_manager_url,
                     json=self.config.session_manager_payload,
