@@ -31,7 +31,7 @@ This script requires the following environment variables:
 | `DEFAULT_REPO_SLUGS`   | Comma-separated list of default repositories                     |
 | `POSSIBLE_REVIEWERS`   | Comma-separated list of possible reviewers (UXXXXX values)       |
 | `BE4FE_REPOS`        | (Optional) Comma-separated list of BE4FE repos |
-| `LIB_REPOS`          | (Optional) Lib repo   |
+| `LIB_REPO`          | (Optional) Lib repo   |
 
 
 ### 🔑 How to Create a Bitbucket HTTP Token

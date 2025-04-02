@@ -30,7 +30,7 @@ This script requires the following environment variables:
 | `BITBUCKET_PROJECT_KEY`          | The Bitbucket project key                       |
 | `DEFAULT_REPO_SLUGS`   | Comma-separated list of default repositories    |
 | `BE4FE_REPOS`        | (Optional) Comma-separated list of BE4FE repos |
-| `LIB_REPOS`          | (Optional) Lib repo   |
+| `LIB_REPO`          | (Optional) Lib repo   |
 
 ### 🔑 How to Create a Bitbucket HTTP Token
 
