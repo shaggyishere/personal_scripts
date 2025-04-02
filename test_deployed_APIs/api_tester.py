@@ -5,7 +5,6 @@ import logging
 import uuid
 from time import time
 from api_tester_config import APITesterConfig
-from urllib.parse import urljoin
 
 class APITester:
     def __init__(self, configs: APITesterConfig, script_dir, microservice, env):
@@ -119,12 +118,12 @@ class APITester:
                 total_response_time = (total_response_time or 0.0) + self._test_single_api(api_info)
 
             self._save_results(f"api_responses_{self.microservice}_{self.env}.json", self.results)
-            self._save_results(f"api_status_log_{self.microservice}_{self.env}.json", self.status_log)
+            self._save_results(f"api_status_{self.microservice}_{self.env}.json", self.status_log)
 
         finally:
             logging.info(f"--------------------------------------------end script run ---------------------------------------------------")
 
-        print(f"API testing completed. Total duration time: {round(total_response_time, 2)}s. Check log files for more infos.")
+        print(f"API testing completed. Total duration time: {round(total_response_time, 2)}s. Check log file and api_results/ directory for more infos.")
 
     def _test_single_api(self, api_info):
         api_route = api_info['route']
@@ -172,6 +171,12 @@ class APITester:
             self.results[api_route] = {"error": str(e)}
             logging.error(f"API: {api_route} failed with error: {str(e)}")
 
-    def _save_results(self, filename, data):
-        with open(filename, "w") as file:
+    
+    def _save_results(self, filename, data, directory="api_results"):
+        os.makedirs(directory, exist_ok=True)
+        
+        file_path = os.path.join(directory, filename)
+        
+        with open(file_path, "w") as file:
             json.dump(data, file, indent=4)
+    

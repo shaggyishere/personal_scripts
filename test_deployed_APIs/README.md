@@ -5,7 +5,7 @@ This script is designed to **test a suite of deployed APIs** from a given `BASE_
 1. **Retrieve a JWT token** from an authentication endpoint.
 2. **Create a session** to handle multiple API requests efficiently.
 3. **Execute API requests** (GET, POST, PUT, etc.) as specified in the `apis_to_test.json` file.
-4. **Log responses**, store JSON responses in a file, and track API response statuses.
+4. **Log responses**, store JSON responses into specific files, and track API response statuses.
 
 ---
 
@@ -96,7 +96,7 @@ The script dynamically loads API test configurations from `api_configs/apis_to_t
 ## 🚀 Running the script
 Once dependencies are installed and configurations are set up, you can run the script:
 ```bash
-python test_deployed_APIs.py <microservice> <environment>
+python test_deployed_APIs.py --ms <microservice1,microservice2> --env <environment1,environment2>
 ```
 Note that the script will fail if no `<environment>` or `<microservice>` is passed.
 
