@@ -163,7 +163,7 @@ class APITester:
             else:
                 self.status_log["Other"][api_route] = response.status_code
 
-            logging.info(f"API: {api_route}, Method: {method}, Status: {response.status_code}, Time: {response_time}s")
+            logging.info(f"url: {response.url}, Method: {method}, Status: {response.status_code}, Time: {response_time}s")
 
             return response_time
 
