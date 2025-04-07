@@ -53,6 +53,12 @@ const argv = yargs(hideBin(process.argv))
         describe: "Source branch name",
         demandOption: true,
     })
+    .option("t", {
+        alias: "title",
+        type: "string",
+        describe: "PR title",
+        demandOption: false,
+    })
     .option("rvw", {
         alias: "reviewers",
         type: "string",
@@ -94,18 +100,19 @@ else if (argv.rs) {
 }
 
 const sourceBranch = argv.b;
+const prTitle = argv.t;
 const reviewers = argv.rvw ? transformStringListToReviewersList(argv.rvw) : transformStringListToReviewersList(extractRandomElementsFromList(POSSIBLE_REVIEWERS, MIN_NUMBER_OF_REVIEWERS));
 
 async function main() {
     for (const repo of repos) {
-        createPullRequest(repo, sourceBranch, reviewers);
+        createPullRequest(repo, sourceBranch, prTitle, reviewers);
     }
 }
 
-async function createPullRequest(repoSlug, sourceBranch, reviewers) {
+async function createPullRequest(repoSlug, sourceBranch, prTitle, reviewers) {
     const url = `${BITBUCKET_BASE_URL}/rest/api/latest/projects/${BITBUCKET_PROJECT_KEY}/repos/${repoSlug}/pull-requests`;
 
-    const prData = generatePullRequestInfo(repoSlug, sourceBranch, reviewers);
+    const prData = generatePullRequestInfo(repoSlug, sourceBranch, prTitle, reviewers);
 
     try {
         const response = await axios.post(url, prData, {
@@ -129,11 +136,11 @@ async function createPullRequest(repoSlug, sourceBranch, reviewers) {
     }
 }
 
-function generatePullRequestInfo(repoSlug, sourceBranch, reviewers) {
+function generatePullRequestInfo(repoSlug, sourceBranch, prTitle, reviewers) {
     const branchTypes = ["feature/", "hotfix/", "bugfix/"];
 
     return {
-        title: removePrefixes(sourceBranch, branchTypes),
+        title: prTitle || removePrefixes(sourceBranch, branchTypes),
         description: "PR created using bitbucket APIs",
         fromRef: {
             id: `refs/heads/${sourceBranch}`,
