@@ -11,9 +11,9 @@ Create a file `curl_to_parse.txt` and paste the curl command you want to parse.
 
 Run the script:
 ```bash
-python curl_to_json.py
+python curl_to_json_config.py
 ```
-The script will print and optionally save the equivalent JSON configuration.
+The script will save the equivalent JSON configuration.
 This JSON can then be added to apis_to_test.json for automated testing.
 
 ## ✅ Example Input
