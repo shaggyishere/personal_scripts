@@ -37,7 +37,7 @@ File produced under `curl_to_json_output` dir:
 {
   "method": "POST",
   "route": "/login",
-  "params": {
+  "query_params": {
     "lang": "en"
   },
   "headers": {

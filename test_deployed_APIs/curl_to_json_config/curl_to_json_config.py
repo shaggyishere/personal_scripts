@@ -17,7 +17,7 @@ def parse_curl_command(curl_command: str) -> dict:
         "method": "GET",
         "route": "",
         "headers": {},
-        "params": {},
+        "query_params": {},
         "body": {}
     }
 
@@ -49,13 +49,13 @@ def parse_curl_command(curl_command: str) -> dict:
             url_found = True
             parsed_url = urlparse(url)
             result["route"] = parsed_url.path
-            result["params"] = {k: v[0] for k, v in parse_qs(parsed_url.query).items()}
+            result["query_params"] = {k: v[0] for k, v in parse_qs(parsed_url.query).items()}
             i += 2
         elif token.startswith("http"):
             if not url_found:
                 parsed_url = urlparse(token)
                 result["route"] = parsed_url.path
-                result["params"] = {k: v[0] for k, v in parse_qs(parsed_url.query).items()}
+                result["query_params"] = {k: v[0] for k, v in parse_qs(parsed_url.query).items()}
                 url_found = True
             i += 1
         else:
