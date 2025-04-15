@@ -25,7 +25,7 @@ def parse_curl_command(curl_command: str) -> dict:
     i = 0
 
     while i < len(tokens):
-        token = tokens[i]
+        token = tokens[i].replace('\n', '')
         if token == "curl":
             i += 1
         elif token in ("-X", "--request"):
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     script_dir = os.path.dirname(os.path.abspath(__file__)) 
 
-    curl_command_file_path = os.path.join(script_dir, "curl_command.txt")
+    curl_command_file_path = os.path.join(script_dir, "curl_to_parse.txt")
 
     config = parse_curl_file(curl_command_file_path)
 
