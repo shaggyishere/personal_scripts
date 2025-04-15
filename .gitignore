@@ -103,4 +103,4 @@ dist/
 **/api_status_log*.json
 **/apis_to_test*.json
 api_results*
-curl_to_json_output/*
+curl_to_json_output*

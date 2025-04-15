@@ -3,8 +3,7 @@ import shlex
 import os
 from urllib.parse import urlparse, parse_qs
 
-
-def parse_curl_file(file_path="curl_command.txt"):
+def parse_curl_file(file_path):
     with open(file_path, "r") as f:
         curl_command = f.read().strip()
 
@@ -13,6 +12,7 @@ def parse_curl_file(file_path="curl_command.txt"):
 
 def parse_curl_command(curl_command: str) -> dict:
     tokens = shlex.split(curl_command)
+
     result = {
         "method": "GET",
         "route": "",
@@ -23,6 +23,7 @@ def parse_curl_command(curl_command: str) -> dict:
 
     url_found = False
     i = 0
+
     while i < len(tokens):
         token = tokens[i]
         if token == "curl":
@@ -43,7 +44,7 @@ def parse_curl_command(curl_command: str) -> dict:
                 body_items = data_str.split("&")
                 result["body"] = {k: v for k, v in (item.split("=") for item in body_items)}
             i += 2
-        elif token in ("--url",):
+        elif token == "--url":
             url = tokens[i + 1]
             url_found = True
             parsed_url = urlparse(url)
@@ -79,6 +80,8 @@ if __name__ == "__main__":
     curl_command_file_path = os.path.join(script_dir, "curl_command.txt")
 
     config = parse_curl_file(curl_command_file_path)
+
     save_to_json(config)
-    print(f"✅ Parsed curl command and saved json config to 'curl_to_json_output' directory")
+
+    print(f"curl_command.txt parsed and saved json config to 'curl_to_json_output' dir")
 
