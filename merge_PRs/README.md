@@ -77,11 +77,13 @@ Note that the source branch **is deleted** after merging is completed.
 | Argument    | Description                                              |
 |-------------|----------------------------------------------------------|
 | `-b` / `--branch` | The **source branch** name for the merge                   |
+| `--prj` / `--project` | Project key of .env to load                   |
 | `--rs` / `--repos` | **Comma-separated list** of repositories (e.g., `repo1,repo2`) |
 | `--be4fe`          | Flag to operate just with BE4FE repos                          |
 | `--lib`            | Flag to operate just with lib repos                            |
 
-
+Note:
+- `--prj` flag is mandatory in order to choose which .env file load
 - `--lib` and `--rs` **cannot** be used together.
 - `--rs` and `--be4fe` **cannot** be used together.
 - If **none** of `--rs`, `--be4fe`, or `--lib` is passed, the script defaults to `DEFAULT_REPO_SLUGS`.
@@ -89,7 +91,7 @@ Note that the source branch **is deleted** after merging is completed.
 ### ✅ Example Usage
 
 ```sh
-node merge_PRs.js -b feature-xyz --rs repo1,repo2
+node merge_PRs.js -b feature-xyz --prj myproj --rs repo1,repo2
 ```
 
 ---

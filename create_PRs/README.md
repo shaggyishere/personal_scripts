@@ -78,12 +78,14 @@ node create_PRs.js -b <branch_name> -rvw <user1,user2> -rs <repo1,repo2>
 | Argument    | Description                                              |
 |-------------|----------------------------------------------------------|
 | `-b` / `--branch` | The **source branch** name for the PR                   |
+| `--prj` / `--project` | Project key of .env to load                   |
 | `--rvw` / `--reviewers` | **Comma-separated list** of reviewers (e.g., `UXXXX,UXXXX`) |
 | `--rs` / `--repos` | **Comma-separated list** of repositories (e.g., `repo1,repo2`) |
 | `--be4fe`          | Flag to operate just with BE4FE repos                          |
 | `--lib`            | Flag to operate just with lib repos                            |
 
 Note: 
+- `--prj` flag is mandatory in order to choose which .env file load
 - if `--rvw` flag is not specified, two random reviewers will be chosen from the `POSSIBLE_REVIEWERS` list.
 - `--be4fe` and `--lib` **cannot** be used together.
 - `--lib` and `--rs` **cannot** be used together.
@@ -93,7 +95,7 @@ Note:
 ### ✅ Example Usage
 
 ```sh
-node create_PRs.js -b feature-xyz -rvw reviewer1,reviewer2 -rs repo1,repo2
+node create_PRs.js -b feature-xyz --prj myproj --rvw reviewer1,reviewer2 --rs repo1,repo2
 ```
 
 ---
