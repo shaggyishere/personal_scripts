@@ -1,6 +1,7 @@
 #!/bin/bash
 
 help_option=false
+is_defined_repos=false
 only_lib=false
 branch=""
 profile=""
@@ -19,7 +20,8 @@ while getopts "p:b:r:hl" flags; do
             branch=$OPTARG
             ;;
         r)
-            IFS=',' read -r -a repos <<< "$OPTARG"
+            is_defined_repos=true
+            IFS=',' read -r -a defined_repos <<< "$OPTARG"
             ;;
         l)
             only_lib=true
@@ -62,14 +64,18 @@ if [ "$only_lib" = true ]; then
   repos=("${lib_repos[@]}")
 fi
 
+if [ "$is_defined_repos" = true ]; then
+  repos=("${defined_repos[@]}")
+fi
+
 for repo in "${repos[@]}"; do
 
     echo "Updating $repo"
 
-    git -C "$repo" checkout "env/svil"
-    git -C "$repo" pull
-    git -C "$repo" checkout -b "$branch"
-    git -C "$repo" push --set-upstream origin "$branch"
+    # git -C "$repo" checkout "env/svil"
+    # git -C "$repo" pull
+    # git -C "$repo" checkout -b "$branch"
+    # git -C "$repo" push --set-upstream origin "$branch"
     
     echo
 done

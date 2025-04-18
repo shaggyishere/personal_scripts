@@ -2,6 +2,7 @@
 
 release_option=false
 help_option=false
+is_defined_repos=false
 branch="env/svil"
 only_lib=false
 profile=""
@@ -22,7 +23,8 @@ while getopts "p:b:r:Rhl" flags; do
             branch=$OPTARG
             ;;
         r)
-            IFS=',' read -r -a repos <<< "$OPTARG"
+            is_defined_repos=true
+            IFS=',' read -r -a defined_repos <<< "$OPTARG"
             ;;
         l)
             only_lib=true
@@ -61,6 +63,11 @@ fi
 if [ "$only_lib" = true ]; then
   repos=("${lib_repos[@]}")
 fi
+
+if [ "$is_defined_repos" = true ]; then
+  repos=("${defined_repos[@]}")
+fi
+
 
 for repo in "${repos[@]}"; do
 
