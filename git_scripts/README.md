@@ -1,6 +1,6 @@
 # Repository Management Scripts
 
-This repository contains three Bash scripts for managing Git repositories. These scripts help with creating branches, updating repositories, and deleting local development branches.
+This repository contains variuous Bash scripts for managing Git repositories. These scripts help with creating branches, updating repositories, and deleting local development branches.
 
 These scripts streamline common Git operations across multiple repositories, making development workflow more efficient.
 
@@ -11,12 +11,13 @@ This script creates a new branch across multiple repositories and pushes it to t
 
 #### Usage:
 ```bash
-sh create_branches.sh -b <branch_name> -r path-to-myrepo1,path-to-myrepo2
+sh create_branches.sh -b <branch_name> -p <project> -r path-to-myrepo1,path-to-myrepo2
 ```
 
 #### Options:
 - `-h` : Display help message.
 - `-b <branch_name>` : Specify the branch name to create.
+- `-p` : Set the correct .env file to load.
 - `-l` : Operate only on the `lib-market-info-v1` repository instead of all default repositories.
 - `-r` : Specify the repos you want to operate as comma string list
 
@@ -32,18 +33,19 @@ This script shows all local branches except `env/svil` in specified repositories
 
 #### Usage:
 ```bash
-sh show_all_local_dev_branches.sh
+sh show_all_local_dev_branches.sh -p <project>
 ```
 
 #### Options:
 - `-h` : Display help message.
+- `-p` : Set the correct .env file to load.
 - `-r` : Specify the repos you want to operate as comma string list
 
 #### Behavior:
 - Shows all other local branches.
 - Can also operate on specific repositories if passed as arguments:
 ```bash
-sh show_all_local_dev_branches.sh -r path-to-myrepo1,path-to-myrepo2
+sh show_all_local_dev_branches.sh -p <project> -r path-to-myrepo1,path-to-myrepo2
 ```
 
 ---
@@ -53,19 +55,21 @@ This script deletes all local branches except `env/svil` in specified repositori
 
 #### Usage:
 ```bash
-sh delete_all_local_dev_branches.sh
+sh delete_all_local_dev_branches.sh -p <project>
 ```
 
 #### Options:
 - `-h` : Display help message.
+- `-p` : Set the correct .env file to load.
 - `-r` : Specify the repos you want to operate as comma string list
 
 #### Behavior:
 - Checks out `env/svil`.
 - Deletes all other local branches.
 - Can also operate on specific repositories if passed as arguments:
+
 ```bash
-sh delete_all_local_dev_branches.sh -r path-to-myrepo1,path-to-myrepo2
+sh delete_all_local_dev_branches.sh -p <project> -r path-to-myrepo1,path-to-myrepo2
 ```
 
 ---
@@ -75,12 +79,13 @@ This script updates specified repositories by fetching the latest changes and op
 
 #### Usage:
 ```bash
-sh update_repos.sh
+sh update_repos.sh -p <project> -b <branch_name>
 ```
 
 #### Options:
 - `-h` : Display help message.
 - `-b <branch_name>` : Specify the branch to checkout before updating (default: `env/svil`).
+- `-p` : Set the correct .env file to load.
 - `-R` : Add an empty `RELEASE` commit and push it.
 - `-l` : Operate only on the `lib-market-info-v1` repository.
 - `-r` : Specify the repos you want to operate as comma string list
