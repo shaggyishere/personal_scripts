@@ -11,7 +11,7 @@ Create environment-specific `.env` files in the project root for each project yo
 ```ini
 repos=("path-to-myrepo1" "path-to-myrepo2")
 lib_repos=("path-to-myrepo1" "path-to-myrepo2")
-development_branch=develop
+default_development_branch=develop
 ```
 
 ## Scripts Overview
@@ -34,14 +34,14 @@ sh create_branches.sh -b <branch_name> -p <project> -r path-to-myrepo1,path-to-m
 - `-r` : Specify the repos you want to operate as comma string list
 
 #### Behavior:
-- Checks out the `$development_branch` branch in each repository.
+- Checks out the `$default_development_branch` branch in each repository.
 - Pulls the latest changes.
 - Creates a new branch and pushes it to origin.
 
 ---
 
 ### 2. `show_all_local_dev_branches.sh`
-This script shows all local branches except `$development_branch` in specified repositories. (Preferibly use it before `delete_all_local_dev_branches.sh`)
+This script shows all local branches except `$default_development_branch` in specified repositories. (Preferibly use it before `delete_all_local_dev_branches.sh`)
 
 #### Usage:
 ```bash
@@ -63,7 +63,7 @@ sh show_all_local_dev_branches.sh -p <project> -r path-to-myrepo1,path-to-myrepo
 ---
 
 ### 3. `delete_all_local_dev_branches.sh`
-This script deletes all local branches except `$development_branch` in specified repositories.
+This script deletes all local branches except `$default_development_branch` in specified repositories.
 
 #### Usage:
 ```bash
@@ -76,7 +76,7 @@ sh delete_all_local_dev_branches.sh -p <project>
 - `-r` : Specify the repos you want to operate as comma string list
 
 #### Behavior:
-- Checks out `$development_branch`.
+- Checks out `$default_development_branch`.
 - Deletes all other local branches.
 - Can also operate on specific repositories if passed as arguments:
 
@@ -96,7 +96,7 @@ sh update_repos.sh -p <project> -b <branch_name>
 
 #### Options:
 - `-h` : Display help message.
-- `-b <branch_name>` : Specify the branch to checkout before updating (default: `$development_branch`).
+- `-b <branch_name>` : Specify the branch to checkout before updating.
 - `-p` : Set the correct .env file to load.
 - `-R` : Add an empty `RELEASE` commit and push it.
 - `-l` : Operate only on the `lib-market-info-v1` repository.

@@ -31,7 +31,7 @@ fi
 
 if [ "$help_option" = true ]; then
     echo "Usage: $0 [-h] [-p project] [-r path_to_repo1,path_to_repo2]"
-    echo "This script is intended to be used when it's necessary to delete all local dev branch except $development_branch one." 
+    echo "This script is intended to be used when it's necessary to delete all local dev branch except $default_development_branch one." 
     echo "This script will perform the same operations for all three be4fe and lib repos if repo is not specified with -r flag!"
     echo "Options:"
     echo "  -h    Display this help message"
@@ -61,8 +61,8 @@ for repo in "${repos[@]}"; do
 
     echo "Pruning $repo's branches"
 
-    git -C "$repo" checkout "$development_branch"
-    git -C "$repo" branch | grep -v "$development_branch" | xargs git -C "$repo" branch -D
+    git -C "$repo" checkout "$default_development_branch"
+    git -C "$repo" branch | grep -v "$default_development_branch" | xargs git -C "$repo" branch -D
     
     echo
 done

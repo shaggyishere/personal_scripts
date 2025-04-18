@@ -3,7 +3,7 @@
 help_option=false
 is_defined_repos=false
 only_lib=false
-branch=""
+branch_to_create=""
 profile=""
 SCRIPT_DIR=$(dirname "$0")
 
@@ -17,7 +17,7 @@ while getopts "p:b:r:hl" flags; do
             profile=$OPTARG
             ;;
         b)
-            branch=$OPTARG
+            branch_to_create=$OPTARG
             ;;
         r)
             is_defined_repos=true
@@ -34,8 +34,8 @@ if [[ -z "$profile" ]]; then
   exit 1
 fi
 
-if [[ -z "$branch" ]]; then
-  echo "Error: -b <branch> is required"
+if [[ -z "$branch_to_create" ]]; then
+  echo "Error: -b <branch_to_create> is required"
   exit 1
 fi
 
@@ -72,10 +72,10 @@ for repo in "${repos[@]}"; do
 
     echo "Updating $repo"
 
-    git -C "$repo" checkout "$development_branch"
+    git -C "$repo" checkout "$default_development_branch"
     git -C "$repo" pull
-    git -C "$repo" checkout -b "$branch"
-    git -C "$repo" push --set-upstream origin "$branch"
+    git -C "$repo" checkout -b "$branch_to_create"
+    git -C "$repo" push --set-upstream origin "$branch_to_create"
     
     echo
 done
