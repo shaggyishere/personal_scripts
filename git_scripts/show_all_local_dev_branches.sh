@@ -31,7 +31,7 @@ fi
 
 if [ "$help_option" = true ]; then
     echo "Usage: $0 [-h] [-p project] [-r path_to_repo1,path_to_repo2]"
-    echo "This script is intended to be used just to show all local dev branch except env/svil one." 
+    echo "This script is intended to be used just to show all local dev branch except $development_branch one." 
     echo "This script will perform the same operations for all three be4fe and lib repos if repo is not specified with -r flag!"
     echo "Options:"
     echo "  -h    Display this help message"
@@ -61,8 +61,9 @@ fi
 for repo in "${repos[@]}"; do
 
     echo "Showing $repo's branches"
+    echo "Showing $repo's branches"
 
-    git -C "$repo" branch | grep -v "env/svil"
+    git -C "$repo" branch | grep -v "$development_branch"
     
     echo
 done

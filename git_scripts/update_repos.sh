@@ -3,7 +3,6 @@
 release_option=false
 help_option=false
 is_defined_repos=false
-branch="env/svil"
 only_lib=false
 profile=""
 SCRIPT_DIR=$(dirname "$0")
@@ -39,7 +38,7 @@ fi
 
 if [ "$help_option" = true ]; then
     echo "Usage: $0 [-R] [-h] [-p project] [-b branch_name]"
-    echo "This script is intended to be used when a CR lifecycle is being closed (merged from PR) and the env/svil branch is to be updated to the origin" 
+    echo "This script is intended to be used when a CR lifecycle is being closed (merged from PR) and the $development_branch branch is to be updated to the origin" 
     echo "This script will perform the same operations for all three be4fe (or just the lib repo if -l is passed)!"
     echo "Options:"
     echo "  -l    to operate the updates only into lib-market-info's repo"
@@ -74,7 +73,7 @@ for repo in "${repos[@]}"; do
     echo "Updating $repo"
 
     git -C "$repo" fetch
-    git -C "$repo" checkout "$branch"
+    git -C "$repo" checkout "$development_branch"
     git -C "$repo" pull
     if [ "$release_option" = true ]; then
         git -C "$repo" commit --allow-empty -m "RELEASE"
