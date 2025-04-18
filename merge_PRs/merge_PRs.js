@@ -9,7 +9,44 @@ import { hideBin } from "yargs/helpers";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, ".env") });
+const argv = yargs(hideBin(process.argv))
+    .option("b", {
+        alias: "branch",
+        type: "string",
+        describe: "Source branch name",
+        demandOption: true,
+    })
+    .option("prj", {
+        alias: "project",
+        type: "string",
+        describe: "Project key of .env to load",
+        demandOption: true,
+    })
+    .option("rs", {
+        alias: "repos",
+        type: "string",
+        describe: "Comma-separated list of repository slugs",
+        demandOption: false,
+    })
+    .option("be4fe", {
+        type: "boolean",
+        describe: "Flag to operate just with BE4FE repos",
+        demandOption: false,
+    })
+    .option("lib", {
+        type: "boolean",
+        describe: "Flag to operate just with lib repos",
+        demandOption: false,
+    })
+    .conflicts("be4fe", "lib")
+    .conflicts("lib", "rs")
+    .conflicts("rs", "be4fe")
+    .help()
+    .argv;
+
+const dotEnvFileToLoad = `.env.${argv.prj}`;
+
+dotenv.config({ path: path.resolve(__dirname, dotEnvFileToLoad) });
 
 const REQUIRED_ENV_VARS = [
     "BITBUCKET_BASE_URL",
@@ -38,42 +75,14 @@ const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
 
 var repos = DEFAULT_REPO_SLUGS;
 
-const argv = yargs(hideBin(process.argv))
-    .option("b", {
-        alias: "branch",
-        type: "string",
-        describe: "Source branch name",
-        demandOption: true,
-    })
-    .option("rs", {
-        alias: "repos",
-        type: "string",
-        describe: "Comma-separated list of repository slugs",
-        demandOption: false,
-    })
-    .option("be4fe", {
-        type: "boolean",
-        describe: "Flag to operate just with BE4FE repos",
-        demandOption: false,
-    })
-    .option("lib", {
-        type: "boolean",
-        describe: "Flag to operate just with lib repos",
-        demandOption: false,
-    })
-    .conflicts("be4fe", "lib")
-    .conflicts("lib", "rs")
-    .conflicts("rs", "be4fe")
-    .help()
-    .argv;
 
 if (argv.be4fe) {
     const BE4FE_REPOS = process.env.BE4FE_REPOS.split(",");
     repos = BE4FE_REPOS;
 }
 else if (argv.lib) {
-    const LIB_REPO = process.env.LIB_REPO;
-    repos = [LIB_REPO];
+    const LIB_REPOS = process.env.LIB_REPOS.split(",");
+    repos = LIB_REPOS;
 }
 else if (argv.rs) {
     repos = argv.rs.split(",");

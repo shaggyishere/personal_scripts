@@ -9,48 +9,17 @@ import { hideBin } from "yargs/helpers";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, ".env") });
-
-const REQUIRED_ENV_VARS = [
-    "BITBUCKET_BASE_URL",
-    "BITBUCKET_USERNAME",
-    "BITBUCKET_PASSWORD",
-    "BITBUCKET_PROJECT_KEY",
-    "DESTINATION_BRANCH",
-    "DEFAULT_REPO_SLUGS",
-    "POSSIBLE_REVIEWERS",
-];
-
-const missingVars = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
-
-if (missingVars.length > 0) {
-    console.error("Missing required environment variables:");
-    missingVars.forEach((key) => console.error(`   - ${key}`));
-    console.error("Please set these variables in your environment before running the script.");
-    process.exit(1);
-}
-
-const BITBUCKET_BASE_URL = process.env.BITBUCKET_BASE_URL;
-const BITBUCKET_USERNAME = process.env.BITBUCKET_USERNAME;
-const BITBUCKET_PASSWORD = process.env.BITBUCKET_PASSWORD;
-const BITBUCKET_PROJECT_KEY = process.env.BITBUCKET_PROJECT_KEY;
-const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
-const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
-const POSSIBLE_REVIEWERS = process.env.POSSIBLE_REVIEWERS.split(",");
-const MIN_NUMBER_OF_REVIEWERS = Number(process.env.MIN_NUMBER_OF_REVIEWERS) || 2;
-
-var repos = DEFAULT_REPO_SLUGS;
-
-if (POSSIBLE_REVIEWERS.length < MIN_NUMBER_OF_REVIEWERS) {
-    console.error("Please set at least two possible reviewers using POSSIBLE_REVIEWERS env variable.");
-    process.exit(1);
-}
-
 const argv = yargs(hideBin(process.argv))
     .option("b", {
         alias: "branch",
         type: "string",
         describe: "Source branch name",
+        demandOption: true,
+    })
+    .option("prj", {
+        alias: "project",
+        type: "string",
+        describe: "Project key of .env to load",
         demandOption: true,
     })
     .option("t", {
@@ -86,6 +55,45 @@ const argv = yargs(hideBin(process.argv))
     .conflicts("rs", "be4fe")
     .help()
     .argv;
+
+const dotEnvFileToLoad = `.env.${argv.prj}`;
+
+dotenv.config({ path: path.resolve(__dirname, dotEnvFileToLoad) });
+
+const REQUIRED_ENV_VARS = [
+    "BITBUCKET_BASE_URL",
+    "BITBUCKET_USERNAME",
+    "BITBUCKET_PASSWORD",
+    "BITBUCKET_PROJECT_KEY",
+    "DESTINATION_BRANCH",
+    "DEFAULT_REPO_SLUGS",
+    "POSSIBLE_REVIEWERS",
+];
+
+const missingVars = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
+
+if (missingVars.length > 0) {
+    console.error("Missing required environment variables:");
+    missingVars.forEach((key) => console.error(`   - ${key}`));
+    console.error("Please set these variables in your environment before running the script.");
+    process.exit(1);
+}
+
+const BITBUCKET_BASE_URL = process.env.BITBUCKET_BASE_URL;
+const BITBUCKET_USERNAME = process.env.BITBUCKET_USERNAME;
+const BITBUCKET_PASSWORD = process.env.BITBUCKET_PASSWORD;
+const BITBUCKET_PROJECT_KEY = process.env.BITBUCKET_PROJECT_KEY;
+const DESTINATION_BRANCH = process.env.DESTINATION_BRANCH;
+const DEFAULT_REPO_SLUGS = process.env.DEFAULT_REPO_SLUGS.split(",");
+const POSSIBLE_REVIEWERS = process.env.POSSIBLE_REVIEWERS.split(",");
+const MIN_NUMBER_OF_REVIEWERS = Number(process.env.MIN_NUMBER_OF_REVIEWERS) || 2;
+
+var repos = DEFAULT_REPO_SLUGS;
+
+if (POSSIBLE_REVIEWERS.length < MIN_NUMBER_OF_REVIEWERS) {
+    console.error("Please set at least two possible reviewers using POSSIBLE_REVIEWERS env variable.");
+    process.exit(1);
+}
 
 if(argv.be4fe) {
     const BE4FE_REPOS = process.env.BE4FE_REPOS.split(",");
