@@ -60,6 +60,10 @@ BITBUCKET_PROJECT_KEY=your-project-key
 DEFAULT_REPO_SLUGS=repo1,repo2,repo3
 ```
 
+Please note that each `.env` file should refer to a project that will be defined as script argument (see below for more infos on command line arguments).
+
+E.g. `.env.myproj` file will contain all my configs for myproj project.
+
 ---
 
 ## 🚀 Running the Script

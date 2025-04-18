@@ -72,10 +72,10 @@ for repo in "${repos[@]}"; do
 
     echo "Updating $repo"
 
-    # git -C "$repo" checkout "env/svil"
-    # git -C "$repo" pull
-    # git -C "$repo" checkout -b "$branch"
-    # git -C "$repo" push --set-upstream origin "$branch"
+    git -C "$repo" checkout "env/svil"
+    git -C "$repo" pull
+    git -C "$repo" checkout -b "$branch"
+    git -C "$repo" push --set-upstream origin "$branch"
     
     echo
 done

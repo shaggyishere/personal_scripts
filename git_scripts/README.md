@@ -4,7 +4,18 @@ This repository contains variuous Bash scripts for managing Git repositories. Th
 
 These scripts streamline common Git operations across multiple repositories, making development workflow more efficient.
 
+## **📌 Environment Configuration**
+Create environment-specific `.env` files in the project root for each project you wanna handle.
+
+### **Example `.env.project` Configuration**
+```ini
+repos=("path-to-myrepo1" "path-to-myrepo2")
+lib_repos=("path-to-myrepo1" "path-to-myrepo2")
+```
+
 ## Scripts Overview
+
+Please note that every script requires a project defined in order to execute git commands.
 
 ### 1. `create_branches.sh`
 This script creates a new branch across multiple repositories and pushes it to the remote repository.
