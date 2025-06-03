@@ -33,7 +33,7 @@ if [ "$help_option" = true ]; then
     echo "This script is intended to be used to push development branches of different repo to origin all at once." 
     echo "This script will perform the same operations for all three be4fe (or just the lib repo if -l is passed)!"
     echo "Options:"
-    echo "  -l    to operate the updates only into lib-market-info's repo"
+    echo "  -l    to operate only into lib repos"
     echo "  -p    to set the .env file to load"
     echo "  -h    Display this help message"
     echo "  -r    path repo list (E.G. ../my-repo)"

@@ -42,7 +42,7 @@ if [ "$help_option" = true ]; then
     echo "This script is intended to be used when a CR lifecycle is being closed (merged from PR) and the $default_development_branch branch is to be updated to the origin" 
     echo "This script will perform the same operations for all three be4fe (or just the lib repo if -l is passed)!"
     echo "Options:"
-    echo "  -l    to operate the updates only into lib-market-info's repo"
+    echo "  -l    to operate the updates only into lib repos"
     echo "  -R    add a RELEASE comment on top and push it to origin"
     echo "  -h    Display this help message"
     echo "  -p    to set the .env file to load"

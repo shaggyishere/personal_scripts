@@ -47,6 +47,7 @@ if [ "$help_option" = true ]; then
     echo "  -h    Display this help message"
     echo "  -b    to set the branch name to create"
     echo "  -p    to set the .env file to load"
+    echo "  -l    to operate only into lib repos"
     echo "  -r    path repo list (E.G. ../my-repo)"
     exit 0
 fi
