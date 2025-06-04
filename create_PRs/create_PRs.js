@@ -131,6 +131,7 @@ async function createPullRequest(repoSlug, sourceBranch, prTitle, reviewers) {
         });
 
         console.log(`✅ PR #${response.data.id} Created Successfully for repo: ${repoSlug}`);
+        console.log(`url: ${response.data.links.self[0].href}`);
     } catch (error) {
         if (error.response) {
             console.error("❌ Error creating PR:");
