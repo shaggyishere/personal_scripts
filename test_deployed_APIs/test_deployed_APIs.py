@@ -1,7 +1,6 @@
 import logging
 import urllib3
 import os
-import sys
 import json
 import argparse
 from api_tester import APITester
@@ -60,18 +59,18 @@ def retrieve_configs_from_env_file():
     session_manager_payload_str = os.getenv("SESSION_MANAGER_PAYLOAD")
     golia_session_manager_create_payload_str = os.getenv("GOLIA_SESSION_MANAGER_CREATE_PAYLOAD")
     golia_session_manager_update_payload_str = os.getenv("GOLIA_SESSION_MANAGER_UPDATE_PAYLOAD")
-    AUTH_PAYLOAD =  json.loads(auth_payload_str) if auth_payload_str else {}
-    SESSION_MANAGER_PAYLOAD =  json.loads(session_manager_payload_str) if session_manager_payload_str else {}
-    GOLIA_SESSION_MANAGER_CREATE_PAYLOAD =  json.loads(golia_session_manager_create_payload_str) if golia_session_manager_create_payload_str else {}
-    GOLIA_SESSION_MANAGER_UPDATE_PAYLOAD =  json.loads(golia_session_manager_update_payload_str) if golia_session_manager_update_payload_str else {}
+    auth_payload =  json.loads(auth_payload_str) if auth_payload_str else {}
+    session_manager_payload =  json.loads(session_manager_payload_str) if session_manager_payload_str else {}
+    golia_session_manager_create_payload =  json.loads(golia_session_manager_create_payload_str) if golia_session_manager_create_payload_str else {}
+    golia_session_manager_update_payload =  json.loads(golia_session_manager_update_payload_str) if golia_session_manager_update_payload_str else {}
     return APITesterConfig(
         os.getenv("BASE_URL"),
         os.getenv("AUTH_URL"),
         os.getenv("SESSION_MANAGER_URL"),
-        AUTH_PAYLOAD,
-        SESSION_MANAGER_PAYLOAD,
-        GOLIA_SESSION_MANAGER_CREATE_PAYLOAD,
-        GOLIA_SESSION_MANAGER_UPDATE_PAYLOAD,
+        auth_payload,
+        session_manager_payload,
+        golia_session_manager_create_payload,
+        golia_session_manager_update_payload,
         os.getenv("AUTH_BASIC_AUTH_HEADER")
     )
 
