@@ -4,3 +4,6 @@ idna==3.10
 python-dotenv==1.0.1
 requests==2.32.3
 urllib3==2.3.0
+pytest==8.4.0
+pytest-mock==3.14.1
+requests-mock==1.12.1

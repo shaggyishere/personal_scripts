@@ -15,7 +15,7 @@ class APITester:
         self.script_dir = script_dir
         self.microservice = microservice
         self.env = env
-        self.api_test_file = os.path.join(script_dir, "api_configs", "apis_to_test_golia.json") if microservice == "golia" else os.path.join(script_dir, "api_configs", "apis_to_test.json")
+        self.apis_to_test_file = os.path.join(script_dir, "api_configs", "apis_to_test_golia.json") if microservice == "golia" else os.path.join(script_dir, "api_configs", "apis_to_test.json")
 
     def authenticate(self):
         try:
@@ -68,7 +68,7 @@ class APITester:
                 self.session_id = response.json().get("payload")
 
                 if not self.session_id:
-                    raise ValueError("Error creating session with session manager.")
+                    raise ValueError("Error creating session with session manager. No sessionId was found")
 
                 # updating session
                 response = self.session.post(
@@ -93,7 +93,7 @@ class APITester:
                 self.session_id = response.json().get("sessionId")
 
                 if not self.session_id:
-                    raise ValueError("Error creating session with session manager.")
+                    raise ValueError("Error creating session with session manager. No sessionId was found")
             
             self.session.headers.update({"X-BEAR-SESSION-TOKEN": self.session_id})
             print(f"Session created succesfully. session_id: {self.session_id}")
@@ -102,30 +102,34 @@ class APITester:
             print(f"Session creation failed: {e}")
             raise
 
-
-    def test_apis(self):
-        total_response_time = None
-
-        with open(self.api_test_file, "r") as file:
-            api_tests = json.load(file)
-
+    def call_apis_and_save_results(self):
         logging.info(f"--------------------------------------------begin script run -------------------------------------------------")
         logging.info(f"microservice: {self.microservice}, env: {self.env}")
 
         try:
+            apis_to_test = self._load_apis_to_test()
+            total_response_time = self._call_all_apis(apis_to_test)
 
-            for api_info in api_tests:
-                total_response_time = (total_response_time or 0.0) + self._test_single_api(api_info)
-
-            self._save_results(f"api_responses_{self.microservice}_{self.env}.json", self.results)
-            self._save_results(f"api_status_{self.microservice}_{self.env}.json", self.status_log)
+            self._save_results_into_file(f"api_responses_{self.microservice}_{self.env}.json", self.results)
+            self._save_results_into_file(f"api_status_{self.microservice}_{self.env}.json", self.status_log)
 
         finally:
             logging.info(f"--------------------------------------------end script run ---------------------------------------------------")
 
         print(f"API testing completed. Total duration time: {round(total_response_time, 2)}s. Check log file and api_results/ directory for more infos.")
+        return total_response_time
 
-    def _test_single_api(self, api_info):
+    def _load_apis_to_test(self):
+        with open(self.apis_to_test_file, "r") as file:
+            return json.load(file)
+
+    def _call_all_apis(self, apis_to_test):
+        total_response_time = 0.0
+        for api_info in apis_to_test:
+            total_response_time += self._call_single_api_and_store_response(api_info)
+        return total_response_time
+
+    def _call_single_api_and_store_response(self, api_info):
         api_route = api_info['route']
         url = f"{self.config.base_url.rstrip('/')}{api_route}"
         method = api_info.get("method", "GET").upper()
@@ -172,7 +176,7 @@ class APITester:
             logging.error(f"API: {api_route} failed with error: {str(e)}")
 
     
-    def _save_results(self, filename, data, directory="api_results"):
+    def _save_results_into_file(self, filename, data, directory="api_results"):
         os.makedirs(directory, exist_ok=True)
         
         file_path = os.path.join(directory, filename)

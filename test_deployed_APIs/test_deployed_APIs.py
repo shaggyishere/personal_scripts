@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
             api_tester.authenticate()
             api_tester.create_session()
-            api_tester.test_apis()
+            api_tester.call_apis_and_save_results()
 
             print()
 
