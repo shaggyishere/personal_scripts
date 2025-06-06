@@ -1,6 +1,7 @@
 import pytest
 import requests
 import requests_mock
+import os
 from unittest.mock import patch, call, mock_open
 
 from api_tester import APITester
@@ -185,3 +186,169 @@ class TestAPITester:
 
             # then
             assert res == [{"endpoint": "/api1", "method": "GET"}, {"endpoint": "/api2", "method": "GET"}]
+
+    def test_call_single_api_and_store_response_success(self, requests_mock):
+        # given
+        mock_api_info = {
+            "method": "GET",
+            "route": "/api",
+            "query_params": {"param": "value"}
+        }
+        mock_response = {"field1": "value1"}
+        mock_status_code = 200
+
+        requests_mock.get(
+            f"{self.config.base_url.rstrip('/')}{mock_api_info['route']}",
+            status_code = mock_status_code,
+            json=mock_response
+        )
+
+        # when
+        res = self.sut._call_single_api_and_store_response(mock_api_info)
+
+        # then
+        assert self.sut.results == {
+            "microservice": "ms",
+            "env": "dev",
+            "/api": {
+                "query_param": mock_api_info["query_params"],
+                "request_body": {},
+                "status_code": mock_status_code,
+                "response_time_sec": res,
+                "response": mock_response
+            }
+        }
+
+        assert self.sut.status_log == {
+            "microservice": "ms",
+            "env": "dev",
+            "200": ["/api"],
+            "500": [],
+            "Other": {}
+        }
+
+    def test_call_single_api_and_store_response_internal_server_error(self, requests_mock):
+        # given
+        mock_api_info = {
+            "method": "POST",
+            "route": "/broken",
+            "body": {"field1": "value1"},
+        }
+        mock_response = {"error": "internal server error"}
+        mock_status_code = 500
+
+        requests_mock.post(
+            f"{self.config.base_url.rstrip('/')}{mock_api_info['route']}",
+            status_code = mock_status_code,
+            json=mock_response
+        )
+
+        # when
+        res = self.sut._call_single_api_and_store_response(mock_api_info)
+
+        # then
+        assert self.sut.results == {
+            "microservice": "ms",
+            "env": "dev",
+            "/broken": {
+                "query_param": {},
+                "request_body": mock_api_info["body"],
+                "status_code": mock_status_code,
+                "response_time_sec": res,
+                "response": mock_response
+            }
+        }
+
+        assert self.sut.status_log == {
+            "microservice": "ms",
+            "env": "dev",
+            "200": [],
+            "500": ["/broken"],
+            "Other": {}
+        }
+    
+    def test_call_single_api_and_store_response_other_error(self, requests_mock):
+        # given
+        mock_api_info = {
+            "method": "POST",
+            "route": "/other-error",
+            "body": {"field1": "value1"},
+        }
+        mock_response = {"error": "not found error"}
+        mock_status_code = 404
+
+        requests_mock.post(
+            f"{self.config.base_url.rstrip('/')}{mock_api_info['route']}",
+            status_code = mock_status_code,
+            json=mock_response
+        )
+
+        # when
+        res = self.sut._call_single_api_and_store_response(mock_api_info)
+
+        # then
+        assert self.sut.results == {
+            "microservice": "ms",
+            "env": "dev",
+            "/other-error": {
+                "query_param": {},
+                "request_body": mock_api_info["body"],
+                "status_code": mock_status_code,
+                "response_time_sec": res,
+                "response": mock_response
+            }
+        }
+
+        assert self.sut.status_log == {
+            "microservice": "ms",
+            "env": "dev",
+            "200": [],
+            "500": [],
+            "Other": {
+                "/other-error" :"404"
+            }
+        }
+    
+    def test_call_single_api_and_store_raise_exception(self, requests_mock):
+        # given
+        mock_api_info = {
+            "method": "GET",
+            "route": "/other-error",
+            "query_param": {"param1": "value1"},
+        }
+        mock_error_message = "Connection failed"
+
+        requests_mock.get(
+            f"{self.config.base_url.rstrip('/')}{mock_api_info['route']}",
+            exc=requests.exceptions.ConnectionError(mock_error_message)
+        )
+
+        # when
+        self.sut._call_single_api_and_store_response(mock_api_info)
+
+        # then
+        assert mock_api_info['route'] in self.sut.results
+        assert "Connection failed" in self.sut.results[mock_api_info['route']]["error"]
+
+    def test_save_results_into_file(self):
+        # given
+        mock_filename = "fake_file_name.json"
+        mock_data = '{"fake": "data"}'
+        file_path = os.path.join("api_results", mock_filename)
+
+
+        with patch("os.makedirs") as mock_makedirs, \
+         patch("builtins.open", mock_open()) as mock_file, \
+         patch("json.dump") as mock_json_dump:
+
+            # when
+            self.sut._save_results_into_file (
+                mock_filename,
+                mock_data
+            )
+
+            # then
+            mock_file.assert_called_once_with(file_path, "w")
+            mock_json_dump.assert_called_once_with(mock_data, mock_file(), indent=4)
+
+

@@ -135,7 +135,7 @@ class APITester:
         method = api_info.get("method", "GET").upper()
         headers = api_info.get("headers", {})
         query_params = api_info.get("query_params", {})
-        request_body = api_info.get("body", None)
+        request_body = api_info.get("body", {})
 
         try:
             start_time = time()
@@ -153,9 +153,10 @@ class APITester:
             self.results["env"] = self.env
             self.results[api_route] = {
                 "query_param": query_params,
+                "request_body": request_body,
                 "status_code": response.status_code,
                 "response_time_sec": response_time,
-                "response": response.json() if response.status_code in {200, 400, 500} else {}
+                "response": response.json()
             }
 
             self.status_log["microservice"] = self.microservice
@@ -165,7 +166,7 @@ class APITester:
             elif response.status_code == 500:
                 self.status_log["500"].append(api_route)
             else:
-                self.status_log["Other"][api_route] = response.status_code
+                self.status_log["Other"][api_route] = str(response.status_code)
 
             logging.info(f"url: {response.url}, Method: {method}, Status: {response.status_code}, Time: {response_time}s")
 
@@ -175,7 +176,6 @@ class APITester:
             self.results[api_route] = {"error": str(e)}
             logging.error(f"API: {api_route} failed with error: {str(e)}")
 
-    
     def _save_results_into_file(self, filename, data, directory="api_results"):
         os.makedirs(directory, exist_ok=True)
         
